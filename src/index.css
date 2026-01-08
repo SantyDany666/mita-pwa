@@ -1,6 +1,9 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 @theme {
+  --font-sans: "Poppins", sans-serif;
+
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -35,25 +38,41 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* #DBE4EE - Background */
+    --background: 212 33% 90%;
+    /* #054A91 - Text/Primary for deep contrast */
+    --foreground: 210 93% 29%;
+    
+    /* White cards to stand out on the blueish background */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 210 93% 29%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 93% 29%;
+    
+    /* #054A91 - Primary */
+    --primary: 210 93% 29%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    
+    /* #00B8A5 - Secondary */
+    --secondary: 174 100% 36%;
+    --secondary-foreground: 210 40% 98%;
+    
+    /* #81A4CD - Muted */
+    --muted: 212 43% 65%;
+    --muted-foreground: 210 93% 29%;
+    
+    /* #3E7CB1 - Accent */
+    --accent: 208 48% 47%;
+    --accent-foreground: 210 40% 98%;
+    
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    
+    --border: 208 48% 47%;
+    --input: 208 48% 47%;
+    --ring: 210 93% 29%;
+    
     --radius: 0.5rem;
   }
 
@@ -85,6 +104,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 }
