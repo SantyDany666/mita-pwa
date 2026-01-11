@@ -1,31 +1,28 @@
-import { useState, useEffect } from "react"
 import { Button } from "../../../components/ui/button"
 import { OtpInput } from "../../../components/ui/otp-input"
 import { useAuthNavigation } from "../hooks/useAuthNavigation"
-import { LockOpen, Clock } from "lucide-react"
+import { LockOpen, Clock, Loader2 } from "lucide-react"
 import { HelpLink } from "../../../components/ui/help-link"
 import { AuthHeader } from "./AuthHeader"
+import { useAuthOtp } from "../hooks/useAuthOtp"
 
 export const OtpScreen = () => {
-  const { navigateToHome, navigateToLogin } = useAuthNavigation()
-  const [otp, setOtp] = useState("")
-  const [timeLeft, setTimeLeft] = useState(60) // 1 minute countdown
-
-  useEffect(() => {
-    if (timeLeft > 0) {
-      const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000)
-      return () => clearTimeout(timerId)
-    }
-  }, [timeLeft])
+  const { navigateToLogin } = useAuthNavigation()
+  const {
+    form,
+    onConfirm,
+    handleResend,
+    timeLeft,
+    canResend,
+    phoneNumber,
+    isLoading,
+    error
+  } = useAuthOtp()
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
     const s = seconds % 60
     return `${m}:${s < 10 ? '0' : ''}${s}`
-  }
-
-  const handleConfirm = () => {
-    navigateToHome()
   }
 
   return (
@@ -46,26 +43,52 @@ export const OtpScreen = () => {
           <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed px-2 font-medium">
             Hemos enviado un código de 6 dígitos a tu número <br />
             <span className="text-primary dark:text-white font-bold whitespace-nowrap text-base mt-1 block">
-              +57 321****123
+              {phoneNumber}
             </span>
           </p>
         </div>
 
-        <div className="mb-8 w-full flex justify-center">
-          <OtpInput value={otp} onChange={setOtp} maxLength={6} />
+        <div className="mb-4 w-full flex flex-col items-center">
+          {/* Using Controller or just value/onChange from react-hook-form if OtpInput supports it directly */}
+          {/* Assuming OtpInput takes value and onChange */}
+          <OtpInput
+            value={form.watch('otp')}
+            onChange={(val) => form.setValue('otp', val)}
+            maxLength={6}
+          />
+          {form.formState.errors.otp && (
+            <p className="text-red-500 text-sm mt-2">{form.formState.errors.otp.message}</p>
+          )}
+          {error && (
+            <p className="text-red-500 text-sm mt-2">{error}</p>
+          )}
         </div>
 
-        <div className="flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400 mb-10 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-full mx-auto w-fit">
-          <Clock className="h-5 w-5 text-secondary" />
-          <p className="text-sm font-medium">
-            Reenviar código en <span className="text-secondary font-bold">{formatTime(timeLeft)}</span>
-          </p>
-        </div>
+        {canResend ? (
+          <Button
+            variant="ghost"
+            onClick={handleResend}
+            className="mb-10 mx-auto text-secondary font-bold"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+            Reenviar código
+          </Button>
+        ) : (
+          <div className="flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400 mb-10 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-full mx-auto w-fit">
+            <Clock className="h-5 w-5 text-secondary" />
+            <p className="text-sm font-medium">
+              Reenviar código en <span className="text-secondary font-bold">{formatTime(timeLeft)}</span>
+            </p>
+          </div>
+        )}
 
         <Button
           className="w-full shadow-lg shadow-[#054A91]/30 mb-6 font-bold h-14"
-          onClick={handleConfirm}
+          onClick={form.handleSubmit(onConfirm)}
+          disabled={isLoading || form.watch('otp').length !== 6}
         >
+          {isLoading ? <Loader2 className="animate-spin mr-2" /> : null}
           Confirmar
         </Button>
 
