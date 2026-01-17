@@ -12,7 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as OtpRouteImport } from './routes/otp'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as CreateProfileRouteImport } from './routes/create-profile'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CreateProfileIndexRouteImport } from './routes/create-profile/index'
+import { Route as CreateProfileStep3RouteImport } from './routes/create-profile/step-3'
+import { Route as CreateProfileStep2RouteImport } from './routes/create-profile/step-2'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -30,10 +34,30 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CreateProfileRoute = CreateProfileRouteImport.update({
+  id: '/create-profile',
+  path: '/create-profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const CreateProfileIndexRoute = CreateProfileIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CreateProfileRoute,
+} as any)
+const CreateProfileStep3Route = CreateProfileStep3RouteImport.update({
+  id: '/step-3',
+  path: '/step-3',
+  getParentRoute: () => CreateProfileRoute,
+} as any)
+const CreateProfileStep2Route = CreateProfileStep2RouteImport.update({
+  id: '/step-2',
+  path: '/step-2',
+  getParentRoute: () => CreateProfileRoute,
 } as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
@@ -43,10 +67,14 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/create-profile': typeof CreateProfileRouteWithChildren
   '/login': typeof LoginRoute
   '/otp': typeof OtpRoute
   '/welcome': typeof WelcomeRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/create-profile/step-2': typeof CreateProfileStep2Route
+  '/create-profile/step-3': typeof CreateProfileStep3Route
+  '/create-profile/': typeof CreateProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,25 +82,60 @@ export interface FileRoutesByTo {
   '/otp': typeof OtpRoute
   '/welcome': typeof WelcomeRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/create-profile/step-2': typeof CreateProfileStep2Route
+  '/create-profile/step-3': typeof CreateProfileStep3Route
+  '/create-profile': typeof CreateProfileIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/create-profile': typeof CreateProfileRouteWithChildren
   '/login': typeof LoginRoute
   '/otp': typeof OtpRoute
   '/welcome': typeof WelcomeRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/create-profile/step-2': typeof CreateProfileStep2Route
+  '/create-profile/step-3': typeof CreateProfileStep3Route
+  '/create-profile/': typeof CreateProfileIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/otp' | '/welcome' | '/auth/callback'
+  fullPaths:
+    | '/'
+    | '/create-profile'
+    | '/login'
+    | '/otp'
+    | '/welcome'
+    | '/auth/callback'
+    | '/create-profile/step-2'
+    | '/create-profile/step-3'
+    | '/create-profile/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/otp' | '/welcome' | '/auth/callback'
-  id: '__root__' | '/' | '/login' | '/otp' | '/welcome' | '/auth/callback'
+  to:
+    | '/'
+    | '/login'
+    | '/otp'
+    | '/welcome'
+    | '/auth/callback'
+    | '/create-profile/step-2'
+    | '/create-profile/step-3'
+    | '/create-profile'
+  id:
+    | '__root__'
+    | '/'
+    | '/create-profile'
+    | '/login'
+    | '/otp'
+    | '/welcome'
+    | '/auth/callback'
+    | '/create-profile/step-2'
+    | '/create-profile/step-3'
+    | '/create-profile/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreateProfileRoute: typeof CreateProfileRouteWithChildren
   LoginRoute: typeof LoginRoute
   OtpRoute: typeof OtpRoute
   WelcomeRoute: typeof WelcomeRoute
@@ -102,12 +165,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/create-profile': {
+      id: '/create-profile'
+      path: '/create-profile'
+      fullPath: '/create-profile'
+      preLoaderRoute: typeof CreateProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/create-profile/': {
+      id: '/create-profile/'
+      path: '/'
+      fullPath: '/create-profile/'
+      preLoaderRoute: typeof CreateProfileIndexRouteImport
+      parentRoute: typeof CreateProfileRoute
+    }
+    '/create-profile/step-3': {
+      id: '/create-profile/step-3'
+      path: '/step-3'
+      fullPath: '/create-profile/step-3'
+      preLoaderRoute: typeof CreateProfileStep3RouteImport
+      parentRoute: typeof CreateProfileRoute
+    }
+    '/create-profile/step-2': {
+      id: '/create-profile/step-2'
+      path: '/step-2'
+      fullPath: '/create-profile/step-2'
+      preLoaderRoute: typeof CreateProfileStep2RouteImport
+      parentRoute: typeof CreateProfileRoute
     }
     '/auth/callback': {
       id: '/auth/callback'
@@ -119,8 +210,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface CreateProfileRouteChildren {
+  CreateProfileStep2Route: typeof CreateProfileStep2Route
+  CreateProfileStep3Route: typeof CreateProfileStep3Route
+  CreateProfileIndexRoute: typeof CreateProfileIndexRoute
+}
+
+const CreateProfileRouteChildren: CreateProfileRouteChildren = {
+  CreateProfileStep2Route: CreateProfileStep2Route,
+  CreateProfileStep3Route: CreateProfileStep3Route,
+  CreateProfileIndexRoute: CreateProfileIndexRoute,
+}
+
+const CreateProfileRouteWithChildren = CreateProfileRoute._addFileChildren(
+  CreateProfileRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreateProfileRoute: CreateProfileRouteWithChildren,
   LoginRoute: LoginRoute,
   OtpRoute: OtpRoute,
   WelcomeRoute: WelcomeRoute,

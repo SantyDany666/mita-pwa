@@ -34,6 +34,8 @@
 3. **Data Integrity:** Validate Supabase responses with Zod if the schema is complex.
 4. **Auth Guards:** Always verify session state before rendering protected routes in TanStack Router.
 5. **Offline Ready:** Leverage TanStack Query's cache for optimistic updates where possible.
+6. **Dark Mode First:** All components must implement `dark:` variants. Default to `bg-gray-900` / `text-white` for dark backgrounds.
+7. **Iconography:** Use `lucide-react` consistently. Ensure icons adapt to dark mode (e.g., `dark:text-[#81A4CD]`).
 
 ## 5. Prohibited Patterns (The "Never" List)
 - 🚫 **NO** `useEffect` for data fetching (Use TanStack Query).
