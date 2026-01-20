@@ -1,17 +1,20 @@
-import { createFileRoute, Navigate, Outlet } from '@tanstack/react-router'
+import { createFileRoute, redirect, Outlet } from '@tanstack/react-router'
 import { CreateProfileLayout } from '@/features/create-profile/components/CreateProfileLayout'
-import { useAuthStore } from '@/store/auth.store'
+import { supabase } from '@/lib/supabase'
 
 export const Route = createFileRoute('/create-profile')({
+  beforeLoad: async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      throw redirect({
+        to: '/welcome',
+      })
+    }
+  },
   component: CreateProfileLayoutWrapper,
 })
 
 function CreateProfileLayoutWrapper() {
-  const { session, isLoading } = useAuthStore()
-
-  if (isLoading) return null
-  if (!session) return <Navigate to="/welcome" />
-
   return (
     <CreateProfileLayout>
       <Outlet />

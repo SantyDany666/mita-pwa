@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OtpRouteImport } from './routes/otp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CreateProfileRouteImport } from './routes/create-profile'
@@ -24,6 +25,11 @@ const WelcomeRoute = WelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/profile.lazy').then((d) => d.Route))
 const OtpRoute = OtpRouteImport.update({
   id: '/otp',
   path: '/otp',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/create-profile': typeof CreateProfileRouteWithChildren
   '/login': typeof LoginRoute
   '/otp': typeof OtpRoute
+  '/profile': typeof ProfileRoute
   '/welcome': typeof WelcomeRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/create-profile/step-2': typeof CreateProfileStep2Route
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/otp': typeof OtpRoute
+  '/profile': typeof ProfileRoute
   '/welcome': typeof WelcomeRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/create-profile/step-2': typeof CreateProfileStep2Route
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/create-profile': typeof CreateProfileRouteWithChildren
   '/login': typeof LoginRoute
   '/otp': typeof OtpRoute
+  '/profile': typeof ProfileRoute
   '/welcome': typeof WelcomeRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/create-profile/step-2': typeof CreateProfileStep2Route
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/create-profile'
     | '/login'
     | '/otp'
+    | '/profile'
     | '/welcome'
     | '/auth/callback'
     | '/create-profile/step-2'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/otp'
+    | '/profile'
     | '/welcome'
     | '/auth/callback'
     | '/create-profile/step-2'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/create-profile'
     | '/login'
     | '/otp'
+    | '/profile'
     | '/welcome'
     | '/auth/callback'
     | '/create-profile/step-2'
@@ -138,6 +150,7 @@ export interface RootRouteChildren {
   CreateProfileRoute: typeof CreateProfileRouteWithChildren
   LoginRoute: typeof LoginRoute
   OtpRoute: typeof OtpRoute
+  ProfileRoute: typeof ProfileRoute
   WelcomeRoute: typeof WelcomeRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
 }
@@ -149,6 +162,13 @@ declare module '@tanstack/react-router' {
       path: '/welcome'
       fullPath: '/welcome'
       preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/otp': {
@@ -231,6 +251,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreateProfileRoute: CreateProfileRouteWithChildren,
   LoginRoute: LoginRoute,
   OtpRoute: OtpRoute,
+  ProfileRoute: ProfileRoute,
   WelcomeRoute: WelcomeRoute,
   AuthCallbackRoute: AuthCallbackRoute,
 }

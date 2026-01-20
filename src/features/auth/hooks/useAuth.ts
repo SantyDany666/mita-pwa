@@ -1,44 +1,48 @@
 import { useState } from 'react';
 import { authService } from '../services/auth.service';
+import { useAuthStore } from '@/store/auth.store';
+import { User } from '@supabase/supabase-js';
 
 interface UseAuthReturn {
   isLoading: boolean;
   error: Error | null;
+  user: User | null;
   loginWithGoogle: () => Promise<void>;
-  logout: () => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 export const useAuth = (): UseAuthReturn => {
-  const [isLoading, setIsLoading] = useState(false);
+  const { user, isLoading: storeLoading } = useAuthStore();
+  const [localLoading, setLocalLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const loginWithGoogle = async () => {
     try {
-      setIsLoading(true);
+      setLocalLoading(true);
       setError(null);
       await authService.signInWithGoogle();
-      // Note: No need to set loading to false on success as the app redirects
     } catch (err) {
       setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-      setIsLoading(false);
+      setLocalLoading(false);
     }
   };
 
-  const logout = async () => {
-      try {
-        setIsLoading(true);
-        await authService.signOut();
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const signOut = async () => {
+    try {
+      setLocalLoading(true);
+      await authService.signOut();
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+    } finally {
+      setLocalLoading(false);
+    }
+  };
 
   return {
-    isLoading,
+    isLoading: storeLoading || localLoading,
     error,
+    user,
     loginWithGoogle,
-    logout,
+    signOut,
   };
 };
