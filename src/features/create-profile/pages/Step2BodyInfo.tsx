@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { Button } from '../../../components/ui/button'
 import { CreateProfileHeader } from '../components/CreateProfileHeader'
 import { ProfileInput } from '../components/ProfileInput'
-import { Step2Data, step2Schema } from "../schemas/profile-schemas"
+import { Step2Data, step2Schema } from "@/features/profile/schemas/profile-schemas"
 import { useCreateProfileStore } from "../stores/create-profile.store"
 
 export const Step2BodyInfo = () => {

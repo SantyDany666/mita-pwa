@@ -1,18 +1,21 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useNavigate } from '@tanstack/react-router'
-import { ArrowRight } from 'lucide-react'
-import { Controller, useForm } from "react-hook-form"
-import { Button } from '../../../components/ui/button'
-import { CreateProfileHeader } from '../components/CreateProfileHeader'
-import { DateOfBirthInput } from '../components/DateOfBirthInput'
-import { GenderSelector } from '../components/GenderSelector'
-import { ProfileInput } from '../components/ProfileInput'
-import { Step1Data, step1Schema } from "../schemas/profile-schemas"
-import { useCreateProfileStore } from "../stores/create-profile.store"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
+import { Controller, useForm } from "react-hook-form";
+import { Button } from "../../../components/ui/button";
+import { CreateProfileHeader } from "../components/CreateProfileHeader";
+import { DateOfBirthInput } from "../components/DateOfBirthInput";
+import { GenderSelector } from "../components/GenderSelector";
+import { ProfileInput } from "../components/ProfileInput";
+import {
+  Step1Data,
+  step1Schema,
+} from "@/features/profile/schemas/profile-schemas";
+import { useCreateProfileStore } from "../stores/create-profile.store";
 
 export const Step1BasicInfo = () => {
-  const navigate = useNavigate()
-  const { step1, setStep1 } = useCreateProfileStore()
+  const navigate = useNavigate();
+  const { step1, setStep1 } = useCreateProfileStore();
 
   const {
     control,
@@ -27,12 +30,12 @@ export const Step1BasicInfo = () => {
       gender: step1?.gender,
     },
     mode: "onChange",
-  })
+  });
 
   const onSubmit = (data: Step1Data) => {
-    setStep1(data)
-    navigate({ to: '/create-profile/step-2' })
-  }
+    setStep1(data);
+    navigate({ to: "/create-profile/step-2" });
+  };
 
   return (
     <>
@@ -93,5 +96,5 @@ export const Step1BasicInfo = () => {
         </div>
       </form>
     </>
-  )
-}
+  );
+};

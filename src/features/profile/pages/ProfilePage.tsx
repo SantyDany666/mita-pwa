@@ -1,9 +1,11 @@
 import { useNavigate } from "@tanstack/react-router"
+import { useState } from "react"
 import { User, Stethoscope } from "lucide-react"
 import { ProfileHeader } from "../components/ProfileHeader"
 import { ProfileUserCard } from "../components/ProfileUserCard"
 import { ProfileSection, ProfileSectionItem } from "../components/ProfileSection"
 import { ProfileLogoutButton } from "../components/ProfileLogoutButton"
+import { EditProfileSheet } from "../components/EditProfileSheet"
 import { useAuth } from "@/features/auth/hooks/useAuth"
 import { useProfile } from "../hooks/useProfile"
 import { Loader2 } from "lucide-react"
@@ -12,6 +14,7 @@ export const ProfilePage = () => {
   const navigate = useNavigate()
   const { user, signOut } = useAuth()
   const { profile, isLoading: profileLoading } = useProfile(user?.id)
+  const [isEditOpen, setIsEditOpen] = useState(false)
 
 
 
@@ -41,6 +44,7 @@ export const ProfilePage = () => {
           name={profile?.name || user?.email?.split('@')[0] || "Usuario"}
           email={user?.email || ""}
           avatarUrl=""
+          onEdit={() => setIsEditOpen(true)}
         />
 
         <ProfileSection
@@ -86,6 +90,12 @@ export const ProfilePage = () => {
 
         <ProfileLogoutButton onLogout={handleLogout} />
       </main>
+
+      <EditProfileSheet
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        profile={profile}
+      />
     </div>
   )
 }

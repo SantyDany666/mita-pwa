@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Step1Data, Step2Data, Step3Data, ProfileData } from '../schemas/profile-schemas'
+import { ProfileData, Step1Data, Step2Data, Step3Data } from "@/features/profile/schemas/profile-schemas"
 
 interface CreateProfileState {
   step1: Step1Data | null
