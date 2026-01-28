@@ -1,7 +1,7 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/lib/supabase";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/reminders/$id")({
   beforeLoad: async () => {
     const {
       data: { session },
@@ -11,9 +11,6 @@ export const Route = createFileRoute("/")({
         to: "/welcome",
       });
     }
-    throw redirect({
-      to: "/pending-doses",
-      search: { view: "today" },
-    });
   },
+  component: () => <Outlet />,
 });

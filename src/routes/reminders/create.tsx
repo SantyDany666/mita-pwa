@@ -1,7 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { supabase } from "@/lib/supabase";
+import { ReminderForm } from "@/features/reminders/components/ReminderForm";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/reminders/create")({
   beforeLoad: async () => {
     const {
       data: { session },
@@ -11,9 +12,6 @@ export const Route = createFileRoute("/")({
         to: "/welcome",
       });
     }
-    throw redirect({
-      to: "/pending-doses",
-      search: { view: "today" },
-    });
   },
+  component: () => <ReminderForm mode="create" />,
 });

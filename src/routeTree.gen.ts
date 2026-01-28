@@ -11,14 +11,21 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PendingDosesRouteImport } from './routes/pending-doses'
 import { Route as OtpRouteImport } from './routes/otp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CreateProfileRouteImport } from './routes/create-profile'
+import { Route as RemindersRouteRouteImport } from './routes/reminders/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RemindersIndexRouteImport } from './routes/reminders/index'
 import { Route as CreateProfileIndexRouteImport } from './routes/create-profile/index'
+import { Route as RemindersCreateRouteImport } from './routes/reminders/create'
 import { Route as CreateProfileStep3RouteImport } from './routes/create-profile/step-3'
 import { Route as CreateProfileStep2RouteImport } from './routes/create-profile/step-2'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as RemindersIdRouteRouteImport } from './routes/reminders/$id/route'
+import { Route as RemindersIdIndexRouteImport } from './routes/reminders/$id/index'
+import { Route as RemindersIdEditRouteImport } from './routes/reminders/$id/edit'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
@@ -30,6 +37,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/profile.lazy').then((d) => d.Route))
+const PendingDosesRoute = PendingDosesRouteImport.update({
+  id: '/pending-doses',
+  path: '/pending-doses',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OtpRoute = OtpRouteImport.update({
   id: '/otp',
   path: '/otp',
@@ -45,15 +57,30 @@ const CreateProfileRoute = CreateProfileRouteImport.update({
   path: '/create-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RemindersRouteRoute = RemindersRouteRouteImport.update({
+  id: '/reminders',
+  path: '/reminders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RemindersIndexRoute = RemindersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RemindersRouteRoute,
+} as any)
 const CreateProfileIndexRoute = CreateProfileIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => CreateProfileRoute,
+} as any)
+const RemindersCreateRoute = RemindersCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => RemindersRouteRoute,
 } as any)
 const CreateProfileStep3Route = CreateProfileStep3RouteImport.update({
   id: '/step-3',
@@ -70,86 +97,141 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RemindersIdRouteRoute = RemindersIdRouteRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => RemindersRouteRoute,
+} as any)
+const RemindersIdIndexRoute = RemindersIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RemindersIdRouteRoute,
+} as any)
+const RemindersIdEditRoute = RemindersIdEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => RemindersIdRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/reminders': typeof RemindersRouteRouteWithChildren
   '/create-profile': typeof CreateProfileRouteWithChildren
   '/login': typeof LoginRoute
   '/otp': typeof OtpRoute
+  '/pending-doses': typeof PendingDosesRoute
   '/profile': typeof ProfileRoute
   '/welcome': typeof WelcomeRoute
+  '/reminders/$id': typeof RemindersIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/create-profile/step-2': typeof CreateProfileStep2Route
   '/create-profile/step-3': typeof CreateProfileStep3Route
+  '/reminders/create': typeof RemindersCreateRoute
   '/create-profile/': typeof CreateProfileIndexRoute
+  '/reminders/': typeof RemindersIndexRoute
+  '/reminders/$id/edit': typeof RemindersIdEditRoute
+  '/reminders/$id/': typeof RemindersIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/otp': typeof OtpRoute
+  '/pending-doses': typeof PendingDosesRoute
   '/profile': typeof ProfileRoute
   '/welcome': typeof WelcomeRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/create-profile/step-2': typeof CreateProfileStep2Route
   '/create-profile/step-3': typeof CreateProfileStep3Route
+  '/reminders/create': typeof RemindersCreateRoute
   '/create-profile': typeof CreateProfileIndexRoute
+  '/reminders': typeof RemindersIndexRoute
+  '/reminders/$id/edit': typeof RemindersIdEditRoute
+  '/reminders/$id': typeof RemindersIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/reminders': typeof RemindersRouteRouteWithChildren
   '/create-profile': typeof CreateProfileRouteWithChildren
   '/login': typeof LoginRoute
   '/otp': typeof OtpRoute
+  '/pending-doses': typeof PendingDosesRoute
   '/profile': typeof ProfileRoute
   '/welcome': typeof WelcomeRoute
+  '/reminders/$id': typeof RemindersIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/create-profile/step-2': typeof CreateProfileStep2Route
   '/create-profile/step-3': typeof CreateProfileStep3Route
+  '/reminders/create': typeof RemindersCreateRoute
   '/create-profile/': typeof CreateProfileIndexRoute
+  '/reminders/': typeof RemindersIndexRoute
+  '/reminders/$id/edit': typeof RemindersIdEditRoute
+  '/reminders/$id/': typeof RemindersIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/reminders'
     | '/create-profile'
     | '/login'
     | '/otp'
+    | '/pending-doses'
     | '/profile'
     | '/welcome'
+    | '/reminders/$id'
     | '/auth/callback'
     | '/create-profile/step-2'
     | '/create-profile/step-3'
+    | '/reminders/create'
     | '/create-profile/'
+    | '/reminders/'
+    | '/reminders/$id/edit'
+    | '/reminders/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/otp'
+    | '/pending-doses'
     | '/profile'
     | '/welcome'
     | '/auth/callback'
     | '/create-profile/step-2'
     | '/create-profile/step-3'
+    | '/reminders/create'
     | '/create-profile'
+    | '/reminders'
+    | '/reminders/$id/edit'
+    | '/reminders/$id'
   id:
     | '__root__'
     | '/'
+    | '/reminders'
     | '/create-profile'
     | '/login'
     | '/otp'
+    | '/pending-doses'
     | '/profile'
     | '/welcome'
+    | '/reminders/$id'
     | '/auth/callback'
     | '/create-profile/step-2'
     | '/create-profile/step-3'
+    | '/reminders/create'
     | '/create-profile/'
+    | '/reminders/'
+    | '/reminders/$id/edit'
+    | '/reminders/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RemindersRouteRoute: typeof RemindersRouteRouteWithChildren
   CreateProfileRoute: typeof CreateProfileRouteWithChildren
   LoginRoute: typeof LoginRoute
   OtpRoute: typeof OtpRoute
+  PendingDosesRoute: typeof PendingDosesRoute
   ProfileRoute: typeof ProfileRoute
   WelcomeRoute: typeof WelcomeRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
@@ -169,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pending-doses': {
+      id: '/pending-doses'
+      path: '/pending-doses'
+      fullPath: '/pending-doses'
+      preLoaderRoute: typeof PendingDosesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/otp': {
@@ -192,6 +281,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reminders': {
+      id: '/reminders'
+      path: '/reminders'
+      fullPath: '/reminders'
+      preLoaderRoute: typeof RemindersRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -199,12 +295,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reminders/': {
+      id: '/reminders/'
+      path: '/'
+      fullPath: '/reminders/'
+      preLoaderRoute: typeof RemindersIndexRouteImport
+      parentRoute: typeof RemindersRouteRoute
+    }
     '/create-profile/': {
       id: '/create-profile/'
       path: '/'
       fullPath: '/create-profile/'
       preLoaderRoute: typeof CreateProfileIndexRouteImport
       parentRoute: typeof CreateProfileRoute
+    }
+    '/reminders/create': {
+      id: '/reminders/create'
+      path: '/create'
+      fullPath: '/reminders/create'
+      preLoaderRoute: typeof RemindersCreateRouteImport
+      parentRoute: typeof RemindersRouteRoute
     }
     '/create-profile/step-3': {
       id: '/create-profile/step-3'
@@ -227,8 +337,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reminders/$id': {
+      id: '/reminders/$id'
+      path: '/$id'
+      fullPath: '/reminders/$id'
+      preLoaderRoute: typeof RemindersIdRouteRouteImport
+      parentRoute: typeof RemindersRouteRoute
+    }
+    '/reminders/$id/': {
+      id: '/reminders/$id/'
+      path: '/'
+      fullPath: '/reminders/$id/'
+      preLoaderRoute: typeof RemindersIdIndexRouteImport
+      parentRoute: typeof RemindersIdRouteRoute
+    }
+    '/reminders/$id/edit': {
+      id: '/reminders/$id/edit'
+      path: '/edit'
+      fullPath: '/reminders/$id/edit'
+      preLoaderRoute: typeof RemindersIdEditRouteImport
+      parentRoute: typeof RemindersIdRouteRoute
+    }
   }
 }
+
+interface RemindersIdRouteRouteChildren {
+  RemindersIdEditRoute: typeof RemindersIdEditRoute
+  RemindersIdIndexRoute: typeof RemindersIdIndexRoute
+}
+
+const RemindersIdRouteRouteChildren: RemindersIdRouteRouteChildren = {
+  RemindersIdEditRoute: RemindersIdEditRoute,
+  RemindersIdIndexRoute: RemindersIdIndexRoute,
+}
+
+const RemindersIdRouteRouteWithChildren =
+  RemindersIdRouteRoute._addFileChildren(RemindersIdRouteRouteChildren)
+
+interface RemindersRouteRouteChildren {
+  RemindersIdRouteRoute: typeof RemindersIdRouteRouteWithChildren
+  RemindersCreateRoute: typeof RemindersCreateRoute
+  RemindersIndexRoute: typeof RemindersIndexRoute
+}
+
+const RemindersRouteRouteChildren: RemindersRouteRouteChildren = {
+  RemindersIdRouteRoute: RemindersIdRouteRouteWithChildren,
+  RemindersCreateRoute: RemindersCreateRoute,
+  RemindersIndexRoute: RemindersIndexRoute,
+}
+
+const RemindersRouteRouteWithChildren = RemindersRouteRoute._addFileChildren(
+  RemindersRouteRouteChildren,
+)
 
 interface CreateProfileRouteChildren {
   CreateProfileStep2Route: typeof CreateProfileStep2Route
@@ -248,9 +408,11 @@ const CreateProfileRouteWithChildren = CreateProfileRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RemindersRouteRoute: RemindersRouteRouteWithChildren,
   CreateProfileRoute: CreateProfileRouteWithChildren,
   LoginRoute: LoginRoute,
   OtpRoute: OtpRoute,
+  PendingDosesRoute: PendingDosesRoute,
   ProfileRoute: ProfileRoute,
   WelcomeRoute: WelcomeRoute,
   AuthCallbackRoute: AuthCallbackRoute,
