@@ -1,9 +1,10 @@
-import { Calendar, Clock, ChevronRight } from "lucide-react";
+import { Calendar, Clock, ChevronRight, Pill } from "lucide-react";
 import { useState } from "react";
 import { FrequencySelectionDrawer } from "./FrequencySelectionDrawer";
 import { getFrequencyLabel } from "../utils/frequency-utils";
 import { getDurationLabel } from "../utils/duration-utils";
 import { DurationSelectionDrawer } from "./DurationSelectionDrawer";
+import { InventorySelectionDrawer } from "./InventorySelectionDrawer";
 import { AppHeader } from "@/components/ui/AppHeader";
 
 interface ReminderFormProps {
@@ -24,6 +25,11 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
   const [duration, setDuration] = useState(initialValues?.duration || "");
   // Start Time State (default 08:00)
   const [startTime, setStartTime] = useState("08:00");
+
+  // Inventory State
+  const [stock, setStock] = useState(0);
+  const [stockAlertEnabled, setStockAlertEnabled] = useState(false);
+  const [stockThreshold, setStockThreshold] = useState(5);
 
   const handleFrequencySelect = (freq: string, time?: string) => {
     setFrequency(freq);
@@ -170,6 +176,41 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
               </div>
             </div>
           </DurationSelectionDrawer>
+
+          <hr className="border-t border-slate-100 dark:border-gray-800 mx-4" />
+
+          {/* Inventory Item */}
+          <InventorySelectionDrawer
+            stock={stock}
+            alertEnabled={stockAlertEnabled}
+            alertThreshold={stockThreshold}
+            onSave={(newStock, enabled, threshold) => {
+              setStock(newStock);
+              setStockAlertEnabled(enabled);
+              setStockThreshold(threshold);
+            }}
+          >
+            <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
+              <div className="flex items-center gap-4">
+                <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
+                  <Pill className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col justify-center">
+                  <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
+                    Inventario
+                  </p>
+                  <p className="text-[#00B8A5] text-sm font-normal leading-normal line-clamp-2">
+                    {stock > 0 ? `${stock} unidades` : "Sin definir"}
+                  </p>
+                </div>
+              </div>
+              <div className="shrink-0">
+                <div className="text-[#00B8A5] flex size-7 items-center justify-center">
+                  <ChevronRight className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </InventorySelectionDrawer>
         </section>
 
         {/* Section 3: Indications */}
