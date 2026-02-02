@@ -5,6 +5,7 @@ import { getFrequencyLabel } from "../utils/frequency-utils";
 import { getDurationLabel } from "../utils/duration-utils";
 import { DurationSelectionDrawer } from "./DurationSelectionDrawer";
 import { InventorySelectionDrawer } from "./InventorySelectionDrawer";
+import { MedicineIconSelector, MedicineIconType } from "./MedicineIconSelector";
 import { AppHeader } from "@/components/ui/AppHeader";
 
 interface ReminderFormProps {
@@ -23,7 +24,7 @@ interface ReminderFormProps {
 export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
   const [frequency, setFrequency] = useState(initialValues?.frequency || "");
   const [duration, setDuration] = useState(initialValues?.duration || "");
-  // Start Time State (default 08:00)
+  const [medicineIcon, setMedicineIcon] = useState<MedicineIconType>("capsule");
   const [startTime, setStartTime] = useState("08:00");
 
   // Inventory State
@@ -59,9 +60,14 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
             Detalles del Medicamento
           </h2>
 
+          <MedicineIconSelector
+            selected={medicineIcon}
+            onSelect={setMedicineIcon}
+          />
+
           <label className="flex flex-col w-full">
             <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal pb-2">
-              Nombre del medicamento
+              Nombre
             </p>
             <input
               type="text"
@@ -87,34 +93,24 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
               <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal pb-2">
                 Unidad
               </p>
-              <input
-                type="text"
-                defaultValue={initialValues?.unit}
-                className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal transition-all"
-                placeholder="mg"
-              />
+              <div className="relative">
+                <select
+                  defaultValue={initialValues?.unit || "mg"}
+                  className="appearance-none w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 p-[15px] text-base font-normal leading-normal transition-all pr-10"
+                >
+                  <option value="mg">mg</option>
+                  <option value="ml">ml</option>
+                  <option value="g">g</option>
+                  <option value="mcg">mcg</option>
+                  <option value="oz">oz</option>
+                  <option value="units">unidades</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#00B8A5]">
+                  <ChevronRight className="rotate-90 w-5 h-5" />
+                </div>
+              </div>
             </label>
           </div>
-
-          <label className="flex flex-col w-full">
-            <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal pb-2">
-              Vía de administración
-            </p>
-            <div className="relative">
-              <select
-                defaultValue={initialValues?.route || "one"}
-                className="appearance-none w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 p-[15px] text-base font-normal leading-normal transition-all pr-10"
-              >
-                <option value="one">Oral</option>
-                <option value="two">Tópica</option>
-                <option value="three">Inyectable</option>
-                <option value="four">Inhalada</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#00B8A5]">
-                <ChevronRight className="rotate-90 w-5 h-5" />
-              </div>
-            </div>
-          </label>
         </section>
 
         {/* Section 2: Frequency & Duration */}
@@ -197,10 +193,13 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
                 </div>
                 <div className="flex flex-col justify-center">
                   <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
-                    Inventario
+                    Inventario{" "}
+                    <span className="text-gray-400 dark:text-gray-500 font-normal text-sm ml-1">
+                      (Opcional)
+                    </span>
                   </p>
                   <p className="text-[#00B8A5] text-sm font-normal leading-normal line-clamp-2">
-                    {stock > 0 ? `${stock} unidades` : "Sin definir"}
+                    {stock > 0 ? `${stock} unidades` : "Sin control de stock"}
                   </p>
                 </div>
               </div>
@@ -217,7 +216,10 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
         <section className="flex flex-col gap-4 bg-white dark:bg-gray-900 p-5 rounded-xl border border-slate-200 dark:border-gray-800 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
           <label className="flex flex-col w-full">
             <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal pb-2">
-              Indicaciones adicionales (opcional)
+              Indicaciones{" "}
+              <span className="text-gray-400 dark:text-gray-500 font-normal text-sm ml-1">
+                (Opcional)
+              </span>
             </p>
             <textarea
               defaultValue={initialValues?.indications}

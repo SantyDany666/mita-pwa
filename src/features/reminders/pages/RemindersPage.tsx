@@ -19,6 +19,7 @@ export function RemindersPage() {
               frequency="Cada 8 horas"
               status="active"
               nextDose="Hoy 2:00 PM"
+              icon="capsule"
             />
             <ReminderCard
               id="2"
@@ -28,6 +29,7 @@ export function RemindersPage() {
               frequency="Cada 24 horas"
               status="active"
               nextDose="Mañana 9:00 AM"
+              icon="drops"
             />
           </div>
         </div>
@@ -45,6 +47,7 @@ export function RemindersPage() {
               unit="mg"
               frequency="Cada 12 horas"
               status="paused"
+              icon="tablet"
             />
           </div>
         </div>
@@ -63,6 +66,7 @@ export function RemindersPage() {
               frequency="Cada 24 horas"
               status="finished"
               endDate="20 Oct 2023"
+              icon="tablet"
             />
             <ReminderCard
               id="5"
@@ -72,6 +76,7 @@ export function RemindersPage() {
               frequency="Cada 24 horas"
               status="finished"
               endDate="15 Sep 2023"
+              icon="tablet"
             />
           </div>
         </div>

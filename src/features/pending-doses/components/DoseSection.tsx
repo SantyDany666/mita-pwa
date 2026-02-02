@@ -3,7 +3,13 @@ import { ReactNode } from "react";
 interface DoseSectionProps {
   title: string;
   icon?: ReactNode;
-  variant?: "default" | "overdue" | "morning" | "afternoon" | "night";
+  variant?:
+    | "default"
+    | "overdue"
+    | "morning"
+    | "afternoon"
+    | "night"
+    | "completed";
   children: ReactNode;
 }
 
@@ -17,6 +23,8 @@ export function DoseSection({
     switch (variant) {
       case "overdue":
         return "text-orange-600 dark:text-orange-300";
+      case "completed":
+        return "text-gray-500 dark:text-gray-400";
       case "morning":
       case "afternoon":
       case "night":
@@ -29,12 +37,12 @@ export function DoseSection({
   return (
     <>
       <h3
-        className={`text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 flex items-center gap-2 ${getHeaderStyles()}`}
+        className={`text-lg font-bold leading-tight tracking-[-0.015em] pb-2 pt-4 flex items-center gap-2 ${getHeaderStyles()}`}
       >
         {icon && <span className="text-xl">{icon}</span>}
         {title}
       </h3>
-      <div className="px-4">{children}</div>
+      <div className="flex flex-col gap-3">{children}</div>
     </>
   );
 }

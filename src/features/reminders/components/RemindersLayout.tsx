@@ -16,25 +16,26 @@ interface RemindersLayoutProps {
 
 export function RemindersLayout({ children }: RemindersLayoutProps) {
   return (
-    <div className="relative flex h-auto min-h-screen w-full flex-col bg-white dark:bg-gray-900 overflow-x-hidden font-sans">
-      {/* Sticky Header */}
-      <AppHeader
-        title="Recordatorios"
-        className="border-gray-100 dark:border-gray-800 shadow-none bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm"
-        titleClassName="text-[#054A91] dark:text-white"
-        leftAction={
-          <Link to="/pending-doses" search={{ view: "today" }}>
-            <div className="flex size-12 items-center justify-center">
-              <ChevronLeft className="w-8 h-8" />
-            </div>
-          </Link>
-        }
-      />
+    <div className="relative flex h-dvh w-full flex-col bg-white dark:bg-gray-900 overflow-hidden font-sans">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="sticky top-0 z-30 w-full bg-white dark:bg-gray-900 border-b border-transparent transition-all">
+          <AppHeader
+            title="Recordatorios"
+            className="shadow-none bg-transparent pt-4 pb-2 relative z-20 border-none"
+            titleClassName="text-[#054A91] dark:text-white"
+            leftAction={
+              <Link to="/pending-doses" search={{ view: "today" }}>
+                <div className="flex size-12 items-center justify-center">
+                  <ChevronLeft className="w-8 h-8 text-[#054A91] dark:text-[#81A4CD]" />
+                </div>
+              </Link>
+            }
+          />
+        </div>
 
-      {/* Main Content */}
-      <div className="flex-1 pb-32">{children}</div>
+        <div className="flex-1 pb-32">{children}</div>
+      </div>
 
-      {/* Floating Action Button (Optional, keeping for consistency) */}
       <div className="fixed bottom-24 right-6 z-30">
         <Link
           to="/reminders/create"
