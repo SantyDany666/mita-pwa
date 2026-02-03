@@ -1,40 +1,47 @@
-import { Calendar, Clock, ChevronRight, Pill } from "lucide-react";
-import { useState } from "react";
+import {
+  Calendar,
+  Clock,
+  ChevronRight,
+  Pill,
+  CalendarClock,
+} from "lucide-react";
+import { Controller, useWatch } from "react-hook-form";
 import { FrequencySelectionDrawer } from "./FrequencySelectionDrawer";
 import { getFrequencyLabel } from "../utils/frequency-utils";
 import { getDurationLabel } from "../utils/duration-utils";
 import { DurationSelectionDrawer } from "./DurationSelectionDrawer";
 import { InventorySelectionDrawer } from "./InventorySelectionDrawer";
-import { MedicineIconSelector, MedicineIconType } from "./MedicineIconSelector";
+import { MedicineIconSelector } from "./MedicineIconSelector";
 import { AppHeader } from "@/components/ui/AppHeader";
+import { StartSelectionDrawer } from "./StartSelectionDrawer";
+import { getSmartDateLabel } from "../utils/date-utils";
+import { useReminderForm } from "../hooks/useReminderForm";
+import { ReminderFormValues } from "../utils/validation";
 
 interface ReminderFormProps {
-  initialValues?: {
-    name: string;
-    dose: string;
-    unit: string;
-    route: string;
-    frequency: string;
-    duration: string;
-    indications: string;
-  };
+  initialValues?: Partial<ReminderFormValues>;
   mode: "create" | "edit";
+  onSubmit?: (data: ReminderFormValues) => void;
 }
 
-export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
-  const [frequency, setFrequency] = useState(initialValues?.frequency || "");
-  const [duration, setDuration] = useState(initialValues?.duration || "");
-  const [medicineIcon, setMedicineIcon] = useState<MedicineIconType>("capsule");
-  const [startTime, setStartTime] = useState("08:00");
+export function ReminderForm({
+  initialValues,
+  mode,
+  onSubmit,
+}: ReminderFormProps) {
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors, isValid },
+  } = useReminderForm({ initialValues });
 
-  // Inventory State
-  const [stock, setStock] = useState(0);
-  const [stockAlertEnabled, setStockAlertEnabled] = useState(false);
-  const [stockThreshold, setStockThreshold] = useState(5);
+  const watchedStartDate = useWatch({ control, name: "startDate" });
+  const watchedDoseLogs = useWatch({ control, name: "doseLogs" });
 
-  const handleFrequencySelect = (freq: string, time?: string) => {
-    setFrequency(freq);
-    if (time) setStartTime(time);
+  const handleFormSubmit = (data: ReminderFormValues) => {
+    console.log("Form Data:", data);
+    onSubmit?.(data);
   };
 
   return (
@@ -45,7 +52,7 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
         className="border-gray-100 dark:border-gray-800 shadow-none bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm"
         titleClassName="text-[#054A91] dark:text-white"
         rightAction={
-          <button onClick={() => window.history.back()}>
+          <button onClick={() => window.history.back()} type="button">
             <p className="text-[#00B8A5] text-base font-bold leading-normal tracking-[0.015em] shrink-0">
               Cancelar
             </p>
@@ -60,21 +67,38 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
             Detalles del Medicamento
           </h2>
 
-          <MedicineIconSelector
-            selected={medicineIcon}
-            onSelect={setMedicineIcon}
+          <Controller
+            control={control}
+            name="medicineIcon"
+            render={({ field }) => (
+              <MedicineIconSelector
+                selected={field.value}
+                onSelect={field.onChange}
+              />
+            )}
           />
 
           <label className="flex flex-col w-full">
             <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal pb-2">
               Nombre
             </p>
-            <input
-              type="text"
-              defaultValue={initialValues?.name}
-              className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal transition-all"
-              placeholder="Ej: Ibuprofeno"
+            <Controller
+              control={control}
+              name="name"
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="text"
+                  className={`flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border ${errors.name ? "border-red-500" : "border-slate-200 dark:border-gray-700"} bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal transition-all`}
+                  placeholder="Ej: Ibuprofeno"
+                />
+              )}
             />
+            {errors.name && (
+              <span className="text-red-500 text-xs mt-1">
+                {errors.name.message}
+              </span>
+            )}
           </label>
 
           <div className="flex w-full gap-4">
@@ -82,11 +106,17 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
               <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal pb-2">
                 Dosis
               </p>
-              <input
-                type="text"
-                defaultValue={initialValues?.dose}
-                className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal transition-all"
-                placeholder="500"
+              <Controller
+                control={control}
+                name="dose"
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    type="text"
+                    className={`flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border ${errors.dose ? "border-red-500" : "border-slate-200 dark:border-gray-700"} bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal transition-all`}
+                    placeholder="500"
+                  />
+                )}
               />
             </label>
             <label className="flex flex-col min-w-0 flex-1">
@@ -94,17 +124,23 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
                 Unidad
               </p>
               <div className="relative">
-                <select
-                  defaultValue={initialValues?.unit || "mg"}
-                  className="appearance-none w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 p-[15px] text-base font-normal leading-normal transition-all pr-10"
-                >
-                  <option value="mg">mg</option>
-                  <option value="ml">ml</option>
-                  <option value="g">g</option>
-                  <option value="mcg">mcg</option>
-                  <option value="oz">oz</option>
-                  <option value="units">unidades</option>
-                </select>
+                <Controller
+                  control={control}
+                  name="unit"
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      className="appearance-none w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 p-[15px] text-base font-normal leading-normal transition-all pr-10"
+                    >
+                      <option value="mg">mg</option>
+                      <option value="ml">ml</option>
+                      <option value="g">g</option>
+                      <option value="mcg">mcg</option>
+                      <option value="oz">oz</option>
+                      <option value="units">unidades</option>
+                    </select>
+                  )}
+                />
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#00B8A5]">
                   <ChevronRight className="rotate-90 w-5 h-5" />
                 </div>
@@ -115,101 +151,166 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
 
         {/* Section 2: Frequency & Duration */}
         <section className="flex flex-col gap-px overflow-hidden bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          {/* Start Date Item */}
+          <Controller
+            control={control}
+            name="startDate"
+            render={({ field }) => (
+              <StartSelectionDrawer
+                value={field.value}
+                onSelect={field.onChange}
+              >
+                <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
+                  <div className="flex items-center gap-4">
+                    <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
+                      <CalendarClock className="w-6 h-6" />
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
+                        Inicio
+                      </p>
+                      <p className="text-[#00B8A5] text-sm font-normal leading-normal line-clamp-2 capitalize">
+                        {getSmartDateLabel(field.value)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="shrink-0">
+                    <div className="text-[#00B8A5] flex size-7 items-center justify-center">
+                      <ChevronRight className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+              </StartSelectionDrawer>
+            )}
+          />
+
+          <hr className="border-t border-slate-100 dark:border-gray-800 mx-4" />
+
           {/* Frequency Item */}
-          <FrequencySelectionDrawer
-            value={frequency}
-            timeValue={startTime}
-            onSelect={handleFrequencySelect}
-          >
-            <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
-              <div className="flex items-center gap-4">
-                <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
-                  <Clock className="w-6 h-6" />
-                </div>
-                <div className="flex flex-col justify-center">
-                  <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
-                    Frecuencia
-                  </p>
-                  <p className="text-[#00B8A5] text-sm font-normal leading-normal line-clamp-2">
-                    {getFrequencyLabel(frequency)}
-                  </p>
-                </div>
-              </div>
-              <div className="shrink-0">
-                <div className="text-[#00B8A5] flex size-7 items-center justify-center">
-                  <ChevronRight className="w-5 h-5" />
-                </div>
-              </div>
-            </div>
-          </FrequencySelectionDrawer>
+          <Controller
+            control={control}
+            name="frequency"
+            render={({ field: frequencyField }) => (
+              <Controller
+                control={control}
+                name="startTime"
+                render={({ field: startTimeField }) => (
+                  <FrequencySelectionDrawer
+                    value={frequencyField.value}
+                    timeValue={startTimeField.value}
+                    startDate={watchedStartDate}
+                    doseLogs={watchedDoseLogs}
+                    onSelect={(freq, time, logs) => {
+                      frequencyField.onChange(freq);
+                      if (time) startTimeField.onChange(time);
+
+                      if (logs) {
+                        setValue("doseLogs", logs);
+                      }
+                    }}
+                  >
+                    <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
+                      <div className="flex items-center gap-4">
+                        <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
+                          <Clock className="w-6 h-6" />
+                        </div>
+                        <div className="flex flex-col justify-center">
+                          <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
+                            Frecuencia
+                          </p>
+                          <p className="text-[#00B8A5] text-sm font-normal leading-normal line-clamp-2">
+                            {getFrequencyLabel(frequencyField.value)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="shrink-0">
+                        <div className="text-[#00B8A5] flex size-7 items-center justify-center">
+                          <ChevronRight className="w-5 h-5" />
+                        </div>
+                      </div>
+                    </div>
+                  </FrequencySelectionDrawer>
+                )}
+              />
+            )}
+          />
 
           <hr className="border-t border-slate-100 dark:border-gray-800 mx-4" />
 
           {/* Duration Item */}
-          <DurationSelectionDrawer
-            value={duration}
-            onSelect={setDuration}
-            frequency={frequency}
-          >
-            <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
-              <div className="flex items-center gap-4">
-                <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
-                  <Calendar className="w-6 h-6" />
+          <Controller
+            control={control}
+            name="duration"
+            render={({ field, formState }) => (
+              <DurationSelectionDrawer
+                value={field.value}
+                onSelect={field.onChange}
+                frequency={formState.defaultValues?.frequency || ""}
+                startDate={watchedStartDate}
+              >
+                <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
+                  <div className="flex items-center gap-4">
+                    <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
+                      <Calendar className="w-6 h-6" />
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
+                        Duración
+                      </p>
+                      <p className="text-[#00B8A5] text-sm font-normal leading-normal line-clamp-2">
+                        {getDurationLabel(field.value)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="shrink-0">
+                    <div className="text-[#00B8A5] flex size-7 items-center justify-center">
+                      <ChevronRight className="w-5 h-5" />
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col justify-center">
-                  <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
-                    Duración
-                  </p>
-                  <p className="text-[#00B8A5] text-sm font-normal leading-normal line-clamp-2">
-                    {getDurationLabel(duration)}
-                  </p>
-                </div>
-              </div>
-              <div className="shrink-0">
-                <div className="text-[#00B8A5] flex size-7 items-center justify-center">
-                  <ChevronRight className="w-5 h-5" />
-                </div>
-              </div>
-            </div>
-          </DurationSelectionDrawer>
+              </DurationSelectionDrawer>
+            )}
+          />
 
           <hr className="border-t border-slate-100 dark:border-gray-800 mx-4" />
 
           {/* Inventory Item */}
-          <InventorySelectionDrawer
-            stock={stock}
-            alertEnabled={stockAlertEnabled}
-            alertThreshold={stockThreshold}
-            onSave={(newStock, enabled, threshold) => {
-              setStock(newStock);
-              setStockAlertEnabled(enabled);
-              setStockThreshold(threshold);
-            }}
-          >
-            <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
-              <div className="flex items-center gap-4">
-                <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
-                  <Pill className="w-6 h-6" />
+          <Controller
+            control={control}
+            name="inventory"
+            render={({ field }) => (
+              <InventorySelectionDrawer
+                value={field.value}
+                onSave={field.onChange}
+              >
+                <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
+                  <div className="flex items-center gap-4">
+                    <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
+                      <Pill className="w-6 h-6" />
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
+                        Inventario{" "}
+                        <span className="text-gray-400 dark:text-gray-500 font-normal text-sm ml-1">
+                          (Opcional)
+                        </span>
+                      </p>
+                      <p className="text-[#00B8A5] text-sm font-normal leading-normal line-clamp-2">
+                        {field.value.stock > 0
+                          ? `${field.value.stock} unidades`
+                          : "Sin control de stock"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="shrink-0">
+                    <div className="text-[#00B8A5] flex size-7 items-center justify-center">
+                      <ChevronRight className="w-5 h-5" />
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col justify-center">
-                  <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
-                    Inventario{" "}
-                    <span className="text-gray-400 dark:text-gray-500 font-normal text-sm ml-1">
-                      (Opcional)
-                    </span>
-                  </p>
-                  <p className="text-[#00B8A5] text-sm font-normal leading-normal line-clamp-2">
-                    {stock > 0 ? `${stock} unidades` : "Sin control de stock"}
-                  </p>
-                </div>
-              </div>
-              <div className="shrink-0">
-                <div className="text-[#00B8A5] flex size-7 items-center justify-center">
-                  <ChevronRight className="w-5 h-5" />
-                </div>
-              </div>
-            </div>
-          </InventorySelectionDrawer>
+              </InventorySelectionDrawer>
+            )}
+          />
         </section>
 
         {/* Section 3: Indications */}
@@ -221,10 +322,16 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
                 (Opcional)
               </span>
             </p>
-            <textarea
-              defaultValue={initialValues?.indications}
-              className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-28 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal transition-all"
-              placeholder="Ej: Tomar con comida, no conducir..."
+            <Controller
+              control={control}
+              name="indications"
+              render={({ field }) => (
+                <textarea
+                  {...field}
+                  className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-28 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal transition-all"
+                  placeholder="Ej: Tomar con comida, no conducir..."
+                />
+              )}
             />
           </label>
         </section>
@@ -232,7 +339,11 @@ export function ReminderForm({ initialValues, mode }: ReminderFormProps) {
 
       {/* Sticky Footer */}
       <footer className="sticky bottom-0 bg-[#F7F9FC] dark:bg-gray-950 p-4 pt-2">
-        <button className="w-full bg-[#054A91] text-white text-lg font-bold rounded-xl h-14 flex items-center justify-center transition-all hover:bg-[#054A91]/90 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#054A91]/20">
+        <button
+          onClick={handleSubmit(handleFormSubmit)}
+          disabled={!isValid}
+          className="w-full bg-[#054A91] text-white text-lg font-bold rounded-xl h-14 flex items-center justify-center transition-all hover:bg-[#054A91]/90 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#054A91]/20"
+        >
           Guardar Recordatorio
         </button>
       </footer>

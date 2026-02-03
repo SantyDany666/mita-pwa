@@ -13,40 +13,50 @@ import { Bell, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import clsx from "clsx";
 
+interface InventoryState {
+  stock: number;
+  stockAlertEnabled: boolean;
+  stockThreshold: number;
+}
+
 interface InventorySelectionDrawerProps {
-  stock?: number;
-  alertEnabled?: boolean;
-  alertThreshold?: number;
-  onSave: (stock: number, enabled: boolean, threshold: number) => void;
+  value: InventoryState;
+  onSave: (value: InventoryState) => void;
   children: React.ReactNode;
 }
 
 export function InventorySelectionDrawer({
-  stock = 0,
-  alertEnabled = false,
-  alertThreshold = 5,
+  value,
   onSave,
   children,
 }: InventorySelectionDrawerProps) {
   const [open, setOpen] = useState(false);
 
   // Local state for the drawer
-  const [currentStock, setCurrentStock] = useState(stock);
-  const [isAlertEnabled, setIsAlertEnabled] = useState(alertEnabled);
-  const [currentThreshold, setCurrentThreshold] = useState(alertThreshold);
+  const [currentStock, setCurrentStock] = useState(value?.stock || 0);
+  const [isAlertEnabled, setIsAlertEnabled] = useState(
+    value?.stockAlertEnabled || false,
+  );
+  const [currentThreshold, setCurrentThreshold] = useState(
+    value?.stockThreshold || 5,
+  );
 
   // Sync state when drawer opens
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
     if (isOpen) {
-      setCurrentStock(stock);
-      setIsAlertEnabled(alertEnabled);
-      setCurrentThreshold(alertThreshold);
+      setCurrentStock(value?.stock || 0);
+      setIsAlertEnabled(value?.stockAlertEnabled || false);
+      setCurrentThreshold(value?.stockThreshold || 5);
     }
   };
 
   const handleSave = () => {
-    onSave(currentStock, isAlertEnabled, currentThreshold);
+    onSave({
+      stock: currentStock,
+      stockAlertEnabled: isAlertEnabled,
+      stockThreshold: currentThreshold,
+    });
     setOpen(false);
   };
 

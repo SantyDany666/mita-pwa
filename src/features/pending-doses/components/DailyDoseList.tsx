@@ -2,11 +2,7 @@ import { DoseCard } from "./DoseCard";
 import { DoseSection } from "./DoseSection";
 import { Sun, Sunset, AlertCircle, CheckCircle, Moon } from "lucide-react";
 
-interface DailyDoseListProps {
-  date: Date;
-}
-
-export function DailyDoseList({ date }: DailyDoseListProps) {
+export function DailyDoseList() {
   return (
     <div className="flex flex-col gap-2 px-4 py-2">
       <DoseSection

@@ -3,17 +3,20 @@ import { Button } from "@/components/ui/button";
 import { DrawerFooter } from "@/components/ui/drawer";
 import { Pill, CalendarCheck } from "lucide-react";
 import { getEstimate, formatDate } from "../../utils/duration-utils";
+import { parse } from "date-fns";
 
 interface FixedDaysConfigProps {
   onConfirm: (value: string) => void;
   frequency: string;
   initialValue?: string;
+  startDate?: string;
 }
 
 export function FixedDaysConfig({
   onConfirm,
   frequency,
   initialValue = "5",
+  startDate,
 }: FixedDaysConfigProps) {
   const [days, setDays] = useState<string>(initialValue);
 
@@ -21,11 +24,13 @@ export function FixedDaysConfig({
     const d = parseInt(days) || 0;
     const totalDoses = getEstimate(frequency, d, "days");
 
-    const endDate = new Date();
+    const endDate = startDate
+      ? parse(startDate, "yyyy-MM-dd", new Date())
+      : new Date();
     endDate.setDate(endDate.getDate() + d);
 
     return { totalDoses, endDate };
-  }, [days, frequency]);
+  }, [days, frequency, startDate]);
 
   const handleConfirm = () => {
     onConfirm(`days:${days}`);

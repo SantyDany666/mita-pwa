@@ -2,12 +2,21 @@ import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { DrawerFooter } from "@/components/ui/drawer";
 import { Calendar } from "lucide-react";
+import {
+  parse,
+  addDays,
+  addWeeks,
+  addMonths,
+  isToday,
+  isTomorrow,
+} from "date-fns";
 
 interface CyclicConfigProps {
   onConfirm: (value: string, time?: string) => void;
   initialValue?: string;
   initialUnit?: "days" | "weeks" | "months";
   initialTime?: string;
+  startDate?: string;
 }
 
 export function CyclicConfig({
@@ -15,6 +24,7 @@ export function CyclicConfig({
   initialValue = "2",
   initialUnit = "days",
   initialTime = "08:00",
+  startDate,
 }: CyclicConfigProps) {
   const [cycleValue, setCycleValue] = useState<string>(initialValue);
   const [cycleUnit, setCycleUnit] = useState<"days" | "weeks" | "months">(
@@ -25,27 +35,38 @@ export function CyclicConfig({
   const projectedCycles = useMemo(() => {
     const val = parseInt(cycleValue) || 1;
     const result = [];
-    const today = new Date();
+
+    // Use startDate if available, otherwise today
+    const start = startDate
+      ? parse(startDate, "yyyy-MM-dd", new Date())
+      : new Date();
 
     for (let i = 0; i < 3; i++) {
-      const d = new Date(today);
-      if (cycleUnit === "days") d.setDate(today.getDate() + val * i);
-      if (cycleUnit === "weeks") d.setDate(today.getDate() + val * 7 * i);
-      if (cycleUnit === "months") d.setMonth(today.getMonth() + val * i);
+      let d = new Date(start);
+      if (cycleUnit === "days") d = addDays(start, val * i);
+      if (cycleUnit === "weeks") d = addWeeks(start, val * i);
+      if (cycleUnit === "months") d = addMonths(start, val * i);
 
       // Format date in Spanish
-      const dayName =
-        i === 0
-          ? "Hoy"
-          : d.toLocaleDateString("es-ES", {
-              weekday: "long",
-              day: "numeric",
-              month: "short",
-            });
+      let dayName = "";
+      if (isToday(d)) {
+        dayName = "Hoy";
+      } else if (isTomorrow(d)) {
+        dayName = "Mañana";
+      } else {
+        dayName = d.toLocaleDateString("es-ES", {
+          weekday: "long",
+          day: "numeric",
+          month: "short",
+        });
+        // Capitalize first letter
+        dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+      }
+
       result.push({ date: dayName, time: cycleStartTime });
     }
     return result;
-  }, [cycleValue, cycleUnit, cycleStartTime]);
+  }, [cycleValue, cycleUnit, cycleStartTime, startDate]);
 
   const handleConfirm = () => {
     onConfirm(`cycle:${cycleValue}${cycleUnit}`, cycleStartTime);

@@ -19,13 +19,21 @@ import { SosConfig } from "./frequency/SosConfig";
 interface FrequencySelectionDrawerProps {
   value?: string;
   timeValue?: string;
-  onSelect: (value: string, time?: string) => void;
+  startDate?: string;
+  doseLogs?: Record<string, "taken" | "skipped" | undefined>;
+  onSelect: (
+    value: string,
+    time?: string,
+    logs?: Record<string, "taken" | "skipped" | undefined>,
+  ) => void;
   children: React.ReactNode;
 }
 
 export function FrequencySelectionDrawer({
   value = "",
   timeValue = "08:00",
+  startDate,
+  doseLogs,
   onSelect,
   children,
 }: FrequencySelectionDrawerProps) {
@@ -59,8 +67,12 @@ export function FrequencySelectionDrawer({
     setStep("menu");
   };
 
-  const handleConfirm = (finalValue: string, finalTime?: string) => {
-    onSelect(finalValue, finalTime);
+  const handleConfirm = (
+    finalValue: string,
+    finalTime?: string,
+    logs?: Record<string, "taken" | "skipped" | undefined>,
+  ) => {
+    onSelect(finalValue, finalTime, logs);
     setOpen(false);
   };
 
@@ -149,6 +161,8 @@ export function FrequencySelectionDrawer({
                     onConfirm={handleConfirm}
                     initialInterval={getDailyInitial()}
                     initialTime={timeValue}
+                    startDate={startDate}
+                    initialLogs={doseLogs}
                   />
                 )}
                 {mode === "weekdays" && (
@@ -164,6 +178,7 @@ export function FrequencySelectionDrawer({
                     initialValue={cyclicData.value}
                     initialUnit={cyclicData.unit}
                     initialTime={timeValue}
+                    startDate={startDate}
                   />
                 )}
                 {mode === "sos" && (

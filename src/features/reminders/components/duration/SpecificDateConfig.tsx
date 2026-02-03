@@ -8,20 +8,26 @@ import {
   formatDate,
   parseLocalDate,
 } from "../../utils/duration-utils";
+import { parse } from "date-fns";
 
 interface SpecificDateConfigProps {
   onConfirm: (value: string) => void;
   frequency: string;
   initialValue?: string;
+  startDate?: string;
 }
 
 export function SpecificDateConfig({
   onConfirm,
   frequency,
   initialValue,
+  startDate,
 }: SpecificDateConfigProps) {
-  // Default to tomorrow if no init value
-  const defaultDate = new Date();
+  // Default to start date + 1 day, or today + 1 day
+  const defaultBase = startDate
+    ? parse(startDate, "yyyy-MM-dd", new Date())
+    : new Date();
+  const defaultDate = new Date(defaultBase);
   defaultDate.setDate(defaultDate.getDate() + 1);
   const minDate = defaultDate.toISOString().split("T")[0];
 
@@ -30,12 +36,17 @@ export function SpecificDateConfig({
   const projection = useMemo(() => {
     if (!dateStr) return null;
     const targetDate = parseLocalDate(dateStr); // Use safe parser
-    const daysDiff = getDaysFromDate(targetDate);
+
+    // Pass startDate to calculate diff from the start of treatment
+    const start = startDate
+      ? parse(startDate, "yyyy-MM-dd", new Date())
+      : undefined;
+    const daysDiff = getDaysFromDate(targetDate, start);
 
     const totalDoses = getEstimate(frequency, daysDiff, "days");
 
     return { totalDoses, daysDiff, formattedDate: formatDate(targetDate) };
-  }, [dateStr, frequency]);
+  }, [dateStr, frequency, startDate]);
 
   const handleConfirm = () => {
     onConfirm(`date:${dateStr}`);

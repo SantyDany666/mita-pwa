@@ -51,13 +51,13 @@ export const getEstimate = (
   return 0;
 };
 
-export const getDaysFromDate = (targetDate: Date): number => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+export const getDaysFromDate = (targetDate: Date, startDate?: Date): number => {
+  const start = startDate ? new Date(startDate) : new Date();
+  start.setHours(0, 0, 0, 0);
   const target = new Date(targetDate);
   target.setHours(0, 0, 0, 0);
 
-  const utc1 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+  const utc1 = Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
   const utc2 = Date.UTC(
     target.getFullYear(),
     target.getMonth(),

@@ -19,6 +19,7 @@ interface DurationSelectionDrawerProps {
   value?: string;
   onSelect: (value: string) => void;
   frequency: string;
+  startDate?: string;
   children: React.ReactNode;
 }
 
@@ -26,6 +27,7 @@ export function DurationSelectionDrawer({
   value = "",
   onSelect,
   frequency,
+  startDate,
   children,
 }: DurationSelectionDrawerProps) {
   const [open, setOpen] = useState(false);
@@ -136,6 +138,7 @@ export function DurationSelectionDrawer({
                     onConfirm={handleConfirm}
                     frequency={frequency}
                     initialValue={getDaysInitial()}
+                    startDate={startDate}
                   />
                 )}
                 {mode === "date" && (
@@ -143,6 +146,7 @@ export function DurationSelectionDrawer({
                     onConfirm={handleConfirm}
                     frequency={frequency}
                     initialValue={getDateInitial()}
+                    startDate={startDate}
                   />
                 )}
               </>
