@@ -37,7 +37,7 @@ export const reminderSchema = z.object({
   indications: z.string().optional(),
 
   // History/Logs for past doses (when creating from a past start time)
-  doseLogs: z.record(z.enum(["taken", "skipped"])).optional(),
+  doseLogs: z.record(z.string(), z.enum(["taken", "skipped"])).optional(),
 });
 
 export type ReminderFormValues = z.infer<typeof reminderSchema>;

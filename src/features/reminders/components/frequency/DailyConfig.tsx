@@ -17,12 +17,12 @@ interface DailyConfigProps {
   onConfirm: (
     value: string,
     time?: string,
-    logs?: Record<string, "taken" | "skipped" | undefined>,
+    logs?: Record<string, "taken" | "skipped">,
   ) => void;
   initialInterval?: string;
   initialTime?: string;
   startDate?: string;
-  initialLogs?: Record<string, "taken" | "skipped" | undefined>;
+  initialLogs?: Record<string, "taken" | "skipped">;
 }
 
 export function DailyConfig({

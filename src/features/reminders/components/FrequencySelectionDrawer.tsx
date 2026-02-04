@@ -20,11 +20,11 @@ interface FrequencySelectionDrawerProps {
   value?: string;
   timeValue?: string;
   startDate?: string;
-  doseLogs?: Record<string, "taken" | "skipped" | undefined>;
+  doseLogs?: Record<string, "taken" | "skipped">;
   onSelect: (
     value: string,
     time?: string,
-    logs?: Record<string, "taken" | "skipped" | undefined>,
+    logs?: Record<string, "taken" | "skipped">,
   ) => void;
   children: React.ReactNode;
 }
@@ -70,7 +70,7 @@ export function FrequencySelectionDrawer({
   const handleConfirm = (
     finalValue: string,
     finalTime?: string,
-    logs?: Record<string, "taken" | "skipped" | undefined>,
+    logs?: Record<string, "taken" | "skipped">,
   ) => {
     onSelect(finalValue, finalTime, logs);
     setOpen(false);
