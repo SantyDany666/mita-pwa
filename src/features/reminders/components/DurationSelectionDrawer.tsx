@@ -48,7 +48,12 @@ export function DurationSelectionDrawer({
         }
       } else {
         setStep("config");
-        if (value.startsWith("days:")) setMode("days");
+        if (
+          value.startsWith("days:") ||
+          value.startsWith("weeks:") ||
+          value.startsWith("months:")
+        )
+          setMode("fixed");
         else if (value.startsWith("date:")) setMode("date");
       }
     }
@@ -70,10 +75,15 @@ export function DurationSelectionDrawer({
 
   // Parsing Helpers
   const getDaysInitial = () => {
-    if (mode === "days" && value && value.startsWith("days:")) {
-      return value.replace("days:", "");
+    if (mode === "fixed" && value) {
+      if (value.startsWith("days:"))
+        return { value: value.replace("days:", ""), unit: "days" as const };
+      if (value.startsWith("weeks:"))
+        return { value: value.replace("weeks:", ""), unit: "weeks" as const };
+      if (value.startsWith("months:"))
+        return { value: value.replace("months:", ""), unit: "months" as const };
     }
-    return "5";
+    return { value: "5", unit: "days" as const };
   };
 
   const getDateInitial = () => {
@@ -103,8 +113,8 @@ export function DurationSelectionDrawer({
                 ? "¿Duración del tratamiento?"
                 : mode === "forever"
                   ? "Sin fecha de fin"
-                  : mode === "days"
-                    ? "Número de días"
+                  : mode === "fixed"
+                    ? "Tiempo determinado"
                     : "Hasta una fecha"}
             </DrawerTitle>
           </DrawerHeader>
@@ -133,11 +143,12 @@ export function DurationSelectionDrawer({
                 {mode === "forever" && (
                   <ForeverConfig onConfirm={() => handleConfirm("forever")} />
                 )}
-                {mode === "days" && (
+                {mode === "fixed" && (
                   <FixedDaysConfig
                     onConfirm={handleConfirm}
                     frequency={frequency}
-                    initialValue={getDaysInitial()}
+                    initialValue={getDaysInitial().value}
+                    initialUnit={getDaysInitial().unit}
                     startDate={startDate}
                   />
                 )}

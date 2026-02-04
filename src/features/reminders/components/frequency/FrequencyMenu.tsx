@@ -59,7 +59,7 @@ export function FrequencyMenu({ onSelect }: FrequencyMenuProps) {
         </div>
         <div className="flex-1">
           <h3 className="font-bold text-slate-900 dark:text-white">
-            Por Intervalos
+            Ciclo Recurrente
           </h3>
           <p className="text-xs text-slate-500 dark:text-gray-400">
             Ej: Cada 2 días, cada 3 semanas

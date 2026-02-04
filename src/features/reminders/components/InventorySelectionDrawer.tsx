@@ -63,12 +63,16 @@ export function InventorySelectionDrawer({
   const handleStockChange = (delta: number) => {
     const newValue = Math.max(0, currentStock + delta);
     setCurrentStock(newValue);
+    // Auto-calculate 20% threshold
+    setCurrentThreshold(Math.round(newValue * 0.2));
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseInt(e.target.value);
     if (!isNaN(val) && val >= 0) {
       setCurrentStock(val);
+      // Auto-calculate 20% threshold
+      setCurrentThreshold(Math.round(val * 0.2));
     }
   };
 

@@ -130,7 +130,7 @@ export function FrequencySelectionDrawer({
                   : mode === "weekdays"
                     ? "Días Específicos"
                     : mode === "cyclic"
-                      ? "Intervalos"
+                      ? "Ciclo Recurrente"
                       : "Solo si es necesario"}
             </DrawerTitle>
           </DrawerHeader>

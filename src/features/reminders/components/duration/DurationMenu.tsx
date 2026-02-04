@@ -32,7 +32,7 @@ export function DurationMenu({ onSelect }: DurationMenuProps) {
       </button>
 
       <button
-        onClick={() => onSelect("days")}
+        onClick={() => onSelect("fixed")}
         className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 dark:border-gray-800 bg-slate-50 dark:bg-gray-800/50 hover:bg-slate-100 dark:hover:bg-gray-800 transition-all text-left group"
       >
         <div className="size-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
@@ -40,7 +40,7 @@ export function DurationMenu({ onSelect }: DurationMenuProps) {
         </div>
         <div className="flex-1">
           <h3 className="font-bold text-slate-900 dark:text-white">
-            Número de días
+            Tiempo determinado
           </h3>
           <p className="text-xs text-slate-500 dark:text-gray-400">
             Ej: Por 5 días, por una semana

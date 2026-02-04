@@ -1,4 +1,4 @@
-export type DurationMode = "forever" | "days" | "date";
+export type DurationMode = "forever" | "fixed" | "date";
 
 export const parseLocalDate = (dateStr: string): Date => {
   if (!dateStr) return new Date();
@@ -9,7 +9,7 @@ export const parseLocalDate = (dateStr: string): Date => {
 export const getEstimate = (
   frequency: string,
   durationValue: number,
-  durationUnit: "days",
+  durationUnit: "days" | "weeks" | "months",
 ): number => {
   if (!frequency || !durationValue) return 0;
 
@@ -43,9 +43,13 @@ export const getEstimate = (
   }
 
   // Calculate total
-  // If unit is days, simply multiply
-  if (durationUnit === "days") {
-    return Math.floor(dosesPerDay * durationValue);
+  let totalDays = 0;
+  if (durationUnit === "days") totalDays = durationValue;
+  else if (durationUnit === "weeks") totalDays = durationValue * 7;
+  else if (durationUnit === "months") totalDays = durationValue * 30;
+
+  if (totalDays > 0) {
+    return Math.floor(dosesPerDay * totalDays);
   }
 
   return 0;
@@ -82,9 +86,19 @@ export const getDurationLabel = (val: string): string => {
 
   if (val === "forever") return "Inicia hoy, sin fecha de fin";
 
+  if (val.startsWith("weeks:")) {
+    const weeks = val.replace("weeks:", "");
+    return `Durante ${weeks} ${parseInt(weeks) === 1 ? "semana" : "semanas"}`;
+  }
+
+  if (val.startsWith("months:")) {
+    const months = val.replace("months:", "");
+    return `Durante ${months} ${parseInt(months) === 1 ? "mes" : "meses"}`;
+  }
+
   if (val.startsWith("days:")) {
     const days = val.replace("days:", "");
-    return `Durante ${days} días`;
+    return `Durante ${days} ${parseInt(days) === 1 ? "día" : "días"}`;
   }
 
   if (val.startsWith("date:")) {
