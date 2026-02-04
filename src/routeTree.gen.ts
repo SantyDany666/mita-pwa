@@ -36,7 +36,7 @@ const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
   getParentRoute: () => rootRouteImport,
-} as any).lazy(() => import('./routes/profile.lazy').then((d) => d.Route))
+} as any)
 const PendingDosesRoute = PendingDosesRouteImport.update({
   id: '/pending-doses',
   path: '/pending-doses',
