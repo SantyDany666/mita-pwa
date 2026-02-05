@@ -1,9 +1,9 @@
 import {
-  Calendar,
-  Clock,
-  ChevronRight,
-  Pill,
   CalendarClock,
+  Repeat,
+  CalendarRange,
+  Package,
+  ChevronRight,
 } from "lucide-react";
 import { Controller, useWatch } from "react-hook-form";
 import { FrequencySelectionDrawer } from "./FrequencySelectionDrawer";
@@ -212,7 +212,7 @@ export function ReminderForm({
                     <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
                       <div className="flex items-center gap-4">
                         <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
-                          <Clock className="w-6 h-6" />
+                          <Repeat className="w-6 h-6" />
                         </div>
                         <div className="flex flex-col justify-center">
                           <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
@@ -251,7 +251,7 @@ export function ReminderForm({
                 <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
                   <div className="flex items-center gap-4">
                     <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
-                      <Calendar className="w-6 h-6" />
+                      <CalendarRange className="w-6 h-6" />
                     </div>
                     <div className="flex flex-col justify-center">
                       <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
@@ -286,7 +286,7 @@ export function ReminderForm({
                 <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">
                   <div className="flex items-center gap-4">
                     <div className="text-[#054A91] dark:text-[#81A4CD] flex items-center justify-center rounded-lg bg-[#054A91]/10 dark:bg-[#054A91]/20 shrink-0 size-12">
-                      <Pill className="w-6 h-6" />
+                      <Package className="w-6 h-6" />
                     </div>
                     <div className="flex flex-col justify-center">
                       <p className="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
