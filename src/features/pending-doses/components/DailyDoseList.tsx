@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { DoseCard } from "./DoseCard";
 import { DoseSection } from "./DoseSection";
-import { DoseSnoozeDrawer } from "./DoseSnoozeDrawer";
 import {
   Sun,
   Sunset,
@@ -33,6 +32,7 @@ export type DoseWithReminder = Tables<"dose_events"> & {
 
 interface DailyDoseListProps {
   selectedDate: Date;
+  onSetSnoozeDoseId: (id: string | null) => void;
 }
 
 const DoseListGroup = ({
@@ -63,10 +63,11 @@ const DoseListGroup = ({
   );
 };
 
-export function DailyDoseList({ selectedDate }: DailyDoseListProps) {
-  const { doses, isLoading, takeDose, skipDose, snoozeDose } =
-    useDoses(selectedDate);
-  const [snoozeDoseId, setSnoozeDoseId] = useState<string | null>(null);
+export function DailyDoseList({
+  selectedDate,
+  onSetSnoozeDoseId,
+}: DailyDoseListProps) {
+  const { doses, isLoading, takeDose, skipDose } = useDoses(selectedDate);
 
   if (isLoading) {
     return (
@@ -183,7 +184,7 @@ export function DailyDoseList({ selectedDate }: DailyDoseListProps) {
         dateLabel={dateLabel}
         onTake={() => takeDose(dose.id)}
         onSkip={() => skipDose(dose.id)}
-        onSnooze={() => setSnoozeDoseId(dose.id)}
+        onSnooze={() => onSetSnoozeDoseId(dose.id)}
       />
     );
   };
@@ -261,16 +262,6 @@ export function DailyDoseList({ selectedDate }: DailyDoseListProps) {
           <DoseListGroup doses={skipped} renderItem={renderDoseCard} />
         </DoseSection>
       )}
-
-      <DoseSnoozeDrawer
-        open={!!snoozeDoseId}
-        onOpenChange={(open) => !open && setSnoozeDoseId(null)}
-        onSnooze={(date) => {
-          if (snoozeDoseId) {
-            snoozeDose({ doseId: snoozeDoseId, date });
-          }
-        }}
-      />
     </div>
   );
 }

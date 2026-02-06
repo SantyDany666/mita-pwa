@@ -80,17 +80,9 @@ export function DoseCard({
               }}
               className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-orange-500 text-white text-sm font-medium leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors"
             >
-              <span className="truncate">Tomada</span>
+              <span className="truncate">Tomar</span>
             </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onSkip?.();
-              }}
-              className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white dark:bg-transparent border border-orange-200/60 dark:border-orange-500/30 text-orange-700 dark:text-orange-300 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
-            >
-              <span className="truncate">Omitida</span>
-            </button>
+
             {/* Posponer - Ghost Variant for Overdue */}
             <button
               onClick={(e) => {
@@ -100,6 +92,16 @@ export function DoseCard({
               className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-orange-600/70 dark:text-orange-400/70 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
             >
               <span className="truncate">Posponer</span>
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onSkip?.();
+              }}
+              className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white dark:bg-transparent border border-orange-200/60 dark:border-orange-500/30 text-orange-700 dark:text-orange-300 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
+            >
+              <span className="truncate">Omitir</span>
             </button>
           </div>
         )}
@@ -203,27 +205,27 @@ export function DoseCard({
             }}
             className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#054A91] dark:bg-[#054A91] text-white text-sm font-medium leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors"
           >
-            <span className="truncate">Tomada</span>
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onSkip?.();
-            }}
-            className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
-          >
-            <span className="truncate">Omitida</span>
+            <span className="truncate">Tomar</span>
           </button>
 
-          {/* Posponer - Ghost Variant */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               onSnooze?.();
             }}
-            className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-gray-500 dark:text-gray-400 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
           >
             <span className="truncate">Posponer</span>
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onSkip?.();
+            }}
+            className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-gray-500 dark:text-gray-400 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          >
+            <span className="truncate">Omitir</span>
           </button>
         </div>
       )}
