@@ -38,7 +38,7 @@ export function InventorySelectionDrawer({
     value?.stockAlertEnabled || false,
   );
   const [currentThreshold, setCurrentThreshold] = useState(
-    value?.stockThreshold || 5,
+    value?.stockThreshold || 0,
   );
 
   // Sync state when drawer opens
@@ -47,7 +47,7 @@ export function InventorySelectionDrawer({
     if (isOpen) {
       setCurrentStock(value?.stock || 0);
       setIsAlertEnabled(value?.stockAlertEnabled || false);
-      setCurrentThreshold(value?.stockThreshold || 5);
+      setCurrentThreshold(value?.stockThreshold || 0);
     }
   };
 

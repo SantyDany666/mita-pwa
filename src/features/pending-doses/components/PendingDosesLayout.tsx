@@ -1,14 +1,8 @@
 import { ReactNode, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import {
-  MoreVertical,
-  Plus,
-  Calendar,
-  BarChart2,
-  Bot,
-  User,
-} from "lucide-react";
+import { MoreVertical, Calendar, BarChart2, Bot, User } from "lucide-react";
 import { AppHeader } from "@/components/ui/AppHeader";
+import { FabSpeedDial } from "@/features/reminders/components/FabSpeedDial";
 
 interface PendingDosesLayoutProps {
   children: ReactNode;
@@ -77,14 +71,7 @@ export function PendingDosesLayout({
       </div>
 
       {/* Floating Action Button */}
-      <div className="fixed bottom-24 right-6 z-30">
-        <Link
-          to="/reminders/create"
-          className="flex h-14 w-14 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#00B8A5] text-white shadow-lg transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-opacity-90"
-        >
-          <Plus className="w-8 h-8" />
-        </Link>
-      </div>
+      <FabSpeedDial />
 
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 pb-2 z-40">

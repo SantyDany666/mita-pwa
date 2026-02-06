@@ -1,10 +1,13 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { profileService, Profile } from "../services/profile.service";
 import { useAuthStore } from "@/store/auth.store";
+import { useProfileStore } from "@/store/profile.store";
 import { ProfileData } from "../schemas/profile-schemas";
 
 export const useProfile = (specificUserId?: string) => {
   const { session } = useAuthStore();
+  const { setCurrentProfile } = useProfileStore();
   const queryClient = useQueryClient();
 
   const userId = specificUserId || session?.user?.id;
@@ -15,11 +18,19 @@ export const useProfile = (specificUserId?: string) => {
     enabled: !!userId,
   });
 
+  // Sync with global store for Reminder accessibility
+  useEffect(() => {
+    if (profileQuery.data) {
+      setCurrentProfile(profileQuery.data);
+    }
+  }, [profileQuery.data, setCurrentProfile]);
+
   const createProfileMutation = useMutation({
     mutationFn: (data: ProfileData) => profileService.createProfile(data),
     onSuccess: (newProfile) => {
       queryClient.setQueryData(["profile", userId], newProfile);
       queryClient.invalidateQueries({ queryKey: ["profile", userId] });
+      setCurrentProfile(newProfile); // Immediate sync
     },
   });
 

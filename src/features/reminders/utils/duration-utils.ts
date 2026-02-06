@@ -1,3 +1,5 @@
+import { addDays, addWeeks, addMonths, subDays } from "date-fns";
+
 export type DurationMode = "forever" | "fixed" | "date";
 
 export const parseLocalDate = (dateStr: string): Date => {
@@ -70,7 +72,9 @@ export const getDaysFromDate = (targetDate: Date, startDate?: Date): number => {
 
   const diffTime = utc2 - utc1;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays > 0 ? diffDays : 0;
+  // Add 1 to make it inclusive (start day + diff)
+  // e.g. Start Jan 1, Target Jan 5. Diff is 4 days. Inclusive count is 5 days.
+  return diffDays >= 0 ? diffDays + 1 : 0;
 };
 
 export const formatDate = (date: Date): string => {
@@ -108,4 +112,40 @@ export const getDurationLabel = (val: string): string => {
   }
 
   return val;
+};
+
+export const calculateEndDate = (
+  startDate: string | Date,
+  duration: string,
+): Date | null => {
+  if (!duration || duration === "forever") return null;
+
+  const start =
+    typeof startDate === "string" ? parseLocalDate(startDate) : startDate;
+
+  if (duration.startsWith("date:")) {
+    return parseLocalDate(duration.replace("date:", ""));
+  }
+
+  // For periods (days, weeks, months), the End Date is inclusive.
+  // So "1 day" duration means End Date = Start Date.
+  // "5 days" means End Date = Start + 4 days.
+
+  if (duration.startsWith("days:")) {
+    const days = parseInt(duration.replace("days:", ""));
+    // If days=1, add 0. If days=5, add 4.
+    return addDays(start, Math.max(0, days - 1));
+  }
+
+  if (duration.startsWith("weeks:")) {
+    const weeks = parseInt(duration.replace("weeks:", ""));
+    return subDays(addWeeks(start, weeks), 1);
+  }
+
+  if (duration.startsWith("months:")) {
+    const months = parseInt(duration.replace("months:", ""));
+    return subDays(addMonths(start, months), 1);
+  }
+
+  return null;
 };

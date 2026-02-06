@@ -9,7 +9,9 @@ interface DoseSectionProps {
     | "morning"
     | "afternoon"
     | "night"
-    | "completed";
+    | "completed"
+    | "taken"
+    | "skipped";
   children: ReactNode;
 }
 
@@ -25,6 +27,10 @@ export function DoseSection({
         return "text-orange-600 dark:text-orange-300";
       case "completed":
         return "text-gray-500 dark:text-gray-400";
+      case "taken":
+        return "text-teal-600 dark:text-teal-400";
+      case "skipped":
+        return "text-gray-400 dark:text-gray-500";
       case "morning":
       case "afternoon":
       case "night":

@@ -1,11 +1,14 @@
 import {
-  Clock,
-  CalendarDays,
+  CalendarClock,
+  Repeat,
+  CalendarRange,
   Utensils,
   Archive,
   Pause,
   Pencil,
   Package,
+  Play,
+  Clock,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { AppHeader } from "@/components/ui/AppHeader";
@@ -23,6 +26,13 @@ interface ReminderDetailProps {
   indications: string;
   stock?: number;
   icon?: MedicineIconType;
+  startDateLabel?: string;
+  startTime?: string;
+  onPause?: () => void;
+  onResume?: () => void;
+  onFinish?: () => void;
+  onReactivate?: () => void;
+  onDelete?: () => void;
 }
 
 export function ReminderDetail({
@@ -34,8 +44,16 @@ export function ReminderDetail({
   frequency,
   duration,
   indications,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   stock,
   icon = "capsule",
+  startDateLabel,
+  startTime,
+  onPause,
+  onResume,
+  onFinish,
+  onReactivate,
+  onDelete,
 }: ReminderDetailProps) {
   const getStatusBadge = () => {
     switch (status) {
@@ -75,7 +93,6 @@ export function ReminderDetail({
         title="Detalle del Recordatorio"
         className="border-gray-100 dark:border-gray-800 shadow-none bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm"
         titleClassName="text-[#054A91] dark:text-white"
-        rightAction={getStatusBadge()}
       />
 
       <main className="flex-grow px-5 pt-6 pb-8">
@@ -83,22 +100,41 @@ export function ReminderDetail({
           <div className="flex items-center justify-center w-24 h-24 rounded-2xl bg-[#054A91]/10 dark:bg-[#054A91]/20 text-[#054A91] dark:text-[#81A4CD]">
             <MedicineIconDisplay type={icon} className="w-12 h-12" />
           </div>
-          <div className="text-center">
-            <h2 className="text-[#054A91] dark:text-white text-2xl font-bold leading-tight">
-              {name}
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 text-base font-medium mt-1">
-              {dose} {unit}
-            </p>
+          <div className="text-center flex flex-col items-center gap-2">
+            <div>
+              <h2 className="text-[#054A91] dark:text-white text-2xl font-bold leading-tight">
+                {name}
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 text-base font-medium mt-1">
+                {dose} {unit}
+              </p>
+            </div>
+            {getStatusBadge()}
           </div>
         </div>
 
         <div className="flex flex-col gap-y-4">
           <section className="rounded-xl border border-slate-100 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-900/50 p-4 space-y-4">
+            {/* Start Info */}
+            <div className="flex items-center gap-4">
+              <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD]">
+                <CalendarClock className="w-5 h-5" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
+                  Inicio
+                </span>
+                <p className="text-slate-900 dark:text-white text-base font-medium leading-tight capitalize">
+                  {startDateLabel || "Hoy"}{" "}
+                  {startTime ? `a las ${startTime}` : ""}
+                </p>
+              </div>
+            </div>
+
             {/* Frequency */}
             <div className="flex items-center gap-4">
               <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD]">
-                <Clock className="w-5 h-5" />
+                <Repeat className="w-5 h-5" />
               </div>
               <div className="flex flex-col text-left">
                 <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
@@ -113,7 +149,7 @@ export function ReminderDetail({
             {/* Duration */}
             <div className="flex items-center gap-4">
               <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD]">
-                <CalendarDays className="w-5 h-5" />
+                <CalendarRange className="w-5 h-5" />
               </div>
               <div className="flex flex-col text-left">
                 <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
@@ -167,29 +203,69 @@ export function ReminderDetail({
       {/* Footer */}
       <footer className="sticky bottom-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-t border-slate-100 dark:border-gray-800 p-4">
         <div className="flex flex-col gap-3">
-          <Link
-            to="/reminders/$id/edit"
-            params={{ id }}
-            className="w-full flex items-center justify-center h-12 rounded-xl bg-[#054A91] shadow-lg shadow-[#054A91]/20 transition-transform active:scale-95 hover:bg-[#054A91]/90"
-          >
-            <Pencil className="w-4 h-4 mr-2 text-white" />
-            <span className="text-white text-base font-semibold">
-              Editar Recordatorio
-            </span>
-          </Link>
+          {status !== "finished" && (
+            <Link
+              to="/reminders/$id/edit"
+              params={{ id }}
+              className="w-full flex items-center justify-center h-12 rounded-xl bg-[#054A91] shadow-lg shadow-[#054A91]/20 transition-transform active:scale-95 hover:bg-[#054A91]/90"
+            >
+              <Pencil className="w-4 h-4 mr-2 text-white" />
+              <span className="text-white text-base font-semibold">
+                Editar Recordatorio
+              </span>
+            </Link>
+          )}
 
           <div className="grid grid-cols-2 gap-3">
-            {/* Pause Button - Outline Primary */}
-            <button className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-[#054A91]/30 dark:border-[#81A4CD]/50 hover:bg-[#054A91]/5 dark:hover:bg-[#054A91]/20 transition-colors text-[#054A91] dark:text-[#81A4CD]">
-              <Pause className="w-4 h-4 mr-2" />
-              <span className="text-base font-medium">Pausar</span>
-            </button>
+            {/* Action 1: Pause/Resume/Reactivate */}
+            {status === "active" && (
+              <button
+                onClick={onPause}
+                className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-[#054A91]/30 dark:border-[#81A4CD]/50 hover:bg-[#054A91]/5 dark:hover:bg-[#054A91]/20 transition-colors text-[#054A91] dark:text-[#81A4CD]"
+              >
+                <Pause className="w-4 h-4 mr-2" />
+                <span className="text-base font-medium">Pausar</span>
+              </button>
+            )}
 
-            {/* Finalize Button - Outline Archive/Slate */}
-            <button className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300">
-              <Archive className="w-4 h-4 mr-2" />
-              <span className="text-base font-medium">Finalizar</span>
-            </button>
+            {status === "paused" && (
+              <button
+                onClick={onResume}
+                className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-[#054A91]/30 dark:border-[#81A4CD]/50 hover:bg-[#054A91]/5 dark:hover:bg-[#054A91]/20 transition-colors text-[#054A91] dark:text-[#81A4CD]"
+              >
+                <Play className="w-4 h-4 mr-2" />
+                <span className="text-base font-medium">Reanudar</span>
+              </button>
+            )}
+
+            {status === "finished" && (
+              <button
+                onClick={onReactivate}
+                className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-[#054A91]/30 dark:border-[#81A4CD]/50 hover:bg-[#054A91]/5 dark:hover:bg-[#054A91]/20 transition-colors text-[#054A91] dark:text-[#81A4CD]"
+              >
+                <Clock className="w-4 h-4 mr-2" />
+                <span className="text-base font-medium">Reactivar</span>
+              </button>
+            )}
+
+            {/* Action 2: Finish/Delete */}
+            {status !== "finished" ? (
+              <button
+                onClick={onFinish}
+                className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300"
+              >
+                <Archive className="w-4 h-4 mr-2" />
+                <span className="text-base font-medium">Finalizar</span>
+              </button>
+            ) : (
+              <button
+                onClick={onDelete}
+                className="w-full flex items-center justify-center h-12 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900 hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors text-red-600 dark:text-red-400"
+              >
+                <Archive className="w-4 h-4 mr-2" />
+                <span className="text-base font-medium">Eliminar</span>
+              </button>
+            )}
           </div>
         </div>
       </footer>

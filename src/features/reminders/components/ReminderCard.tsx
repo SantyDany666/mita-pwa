@@ -13,10 +13,13 @@ export interface ReminderCardProps {
   nextDose?: string;
   endDate?: string;
   icon?: MedicineIconType;
+  onPause?: () => void;
+  onResume?: () => void;
+  onFinish?: () => void;
 }
 
 export function ReminderCard({
-  id = "1",
+  id,
   medicineName,
   dose,
   unit,
@@ -25,11 +28,16 @@ export function ReminderCard({
   nextDose,
   endDate,
   icon = "capsule",
+  onPause,
+  onResume,
+  onFinish,
 }: ReminderCardProps) {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate({ to: "/reminders/$id", params: { id } });
+    if (id) {
+      navigate({ to: "/reminders/$id", params: { id } });
+    }
   };
 
   // Paused Style
@@ -60,13 +68,19 @@ export function ReminderCard({
 
         <div className="flex flex-1 gap-3 flex-wrap pt-3 justify-start border-t border-slate-200 dark:border-slate-700/50">
           <button
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              onResume?.();
+            }}
             className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-3 bg-[#054A91] text-white text-sm font-medium hover:bg-opacity-90 transition-colors"
           >
             <Play className="w-4 h-4 mr-1.5" /> Reanudar
           </button>
           <button
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              onFinish?.();
+            }}
             className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-3 bg-white dark:bg-transparent border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             <Archive className="w-4 h-4 mr-1.5" /> Finalizar
@@ -140,13 +154,19 @@ export function ReminderCard({
 
       <div className="flex flex-1 gap-3 flex-wrap pt-3 justify-start border-t border-gray-200 dark:border-gray-700">
         <button
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onPause?.();
+          }}
           className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-3 bg-white dark:bg-gray-700 border border-[#054A91]/30 dark:border-gray-600 text-[#054A91] dark:text-gray-200 text-sm font-medium hover:bg-[#054A91]/5 dark:hover:bg-gray-600 transition-colors"
         >
           <Pause className="w-4 h-4 mr-1.5" /> Pausar
         </button>
         <button
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onFinish?.();
+          }}
           className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-3 bg-white dark:bg-transparent border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
         >
           <Archive className="w-4 h-4 mr-1.5" /> Finalizar

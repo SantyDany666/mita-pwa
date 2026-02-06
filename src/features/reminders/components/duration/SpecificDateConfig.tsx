@@ -27,9 +27,9 @@ export function SpecificDateConfig({
   const defaultBase = startDate
     ? parse(startDate, "yyyy-MM-dd", new Date())
     : new Date();
-  const defaultDate = new Date(defaultBase);
-  defaultDate.setDate(defaultDate.getDate() + 1);
-  const minDate = defaultDate.toISOString().split("T")[0];
+
+  // Min date should be the start date itself (inclusive 1 day duration)
+  const minDate = defaultBase.toISOString().split("T")[0];
 
   const [dateStr, setDateStr] = useState<string>(initialValue || minDate);
 

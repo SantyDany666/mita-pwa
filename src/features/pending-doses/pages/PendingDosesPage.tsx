@@ -28,7 +28,7 @@ export function PendingDosesPage() {
       <div className="bg-white dark:bg-gray-900 min-h-full">
         {/* List Area */}
         <div className="pb-20">
-          <DailyDoseList />
+          <DailyDoseList selectedDate={selectedDate} />
         </div>
       </div>
     </PendingDosesLayout>

@@ -32,9 +32,13 @@ export function FixedDaysConfig({
       ? parse(startDate, "yyyy-MM-dd", new Date())
       : new Date();
 
-    if (unit === "days") endDate.setDate(endDate.getDate() + d);
-    if (unit === "weeks") endDate.setDate(endDate.getDate() + d * 7);
-    if (unit === "months") endDate.setMonth(endDate.getMonth() + d);
+    if (unit === "days")
+      endDate.setDate(endDate.getDate() + Math.max(0, d - 1));
+    if (unit === "weeks") endDate.setDate(endDate.getDate() + d * 7 - 1);
+    if (unit === "months") {
+      endDate.setMonth(endDate.getMonth() + d);
+      endDate.setDate(endDate.getDate() - 1);
+    }
 
     return { totalDoses, endDate };
   }, [value, unit, frequency, startDate]);

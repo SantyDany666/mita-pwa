@@ -22,7 +22,7 @@ export function useReminderForm({ initialValues }: UseReminderFormProps = {}) {
       inventory: {
         stock: 0,
         stockAlertEnabled: false,
-        stockThreshold: 5,
+        stockThreshold: 0,
       },
       indications: "",
       ...initialValues,

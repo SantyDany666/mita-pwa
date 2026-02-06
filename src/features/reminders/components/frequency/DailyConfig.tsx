@@ -10,6 +10,7 @@ import {
   isPast,
   setHours,
   setMinutes,
+  format,
 } from "date-fns";
 import { Check, X } from "lucide-react";
 
@@ -84,12 +85,14 @@ export function DailyConfig({
         label = formatted.charAt(0).toUpperCase() + formatted.slice(1);
       }
 
+      const id = format(specificDoseDateTime, "yyyy-MM-dd'T'HH:mm");
+
       result.push({
         time: niceTime,
         raw: timeStr,
         day: label,
         isPast: isDosePast,
-        id: `${label}-${timeStr}`, // Simple ID
+        id,
       });
     }
     return result; // Show all doses
