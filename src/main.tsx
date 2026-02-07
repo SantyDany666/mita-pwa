@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
+import { SocialLogin } from "@capgo/capacitor-social-login";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
@@ -23,6 +24,13 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
+
+// Initialize Social Login
+SocialLogin.initialize({
+  google: {
+    webClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+  },
+});
 
 // Render the app
 const rootElement = document.getElementById("root")!;

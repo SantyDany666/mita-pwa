@@ -1,24 +1,53 @@
 import { supabase } from "@/lib/supabase";
+import { Capacitor } from "@capacitor/core";
+import { SocialLogin } from "@capgo/capacitor-social-login";
 
 export const authService = {
   /**
    * Initiates the OAuth sign-in flow with Google.
-   * This will redirect the user to the Google sign-in page.
+   * On Native (Android/iOS), it uses the native Google Sign-In SDK.
+   * On Web, it redirects to the Google sign-in page.
    */
   signInWithGoogle: async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        // We can request additional scopes here if needed in the future
-      },
-    });
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const result = await SocialLogin.login({
+          provider: "google",
+          options: {
+            scopes: ["email", "profile"],
+          },
+        });
 
-    if (error) {
+        if (result.result.responseType === "offline") {
+          throw new Error("Offline mode not supported");
+        }
+
+        const idToken = result.result.idToken;
+        if (!idToken) throw new Error("No ID Token found");
+
+        const { data, error } = await supabase.auth.signInWithIdToken({
+          provider: "google",
+          token: idToken,
+        });
+
+        if (error) throw error;
+        return data;
+      } else {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+            // We can request additional scopes here if needed in the future
+          },
+        });
+
+        if (error) throw error;
+        return data;
+      }
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
       throw error;
     }
-
-    return data;
   },
 
   /**
@@ -56,7 +85,7 @@ export const authService = {
     const { data, error } = await supabase.auth.verifyOtp({
       phone,
       token,
-      type: 'sms',
+      type: "sms",
     });
 
     if (error) {
