@@ -89,7 +89,7 @@ export function DoseCard({
                 e.stopPropagation();
                 onSnooze?.();
               }}
-              className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-orange-600/70 dark:text-orange-400/70 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
+              className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white dark:bg-transparent border border-orange-200/60 dark:border-orange-500/30 text-orange-700 dark:text-orange-300 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
             >
               <span className="truncate">Posponer</span>
             </button>
@@ -99,7 +99,7 @@ export function DoseCard({
                 e.stopPropagation();
                 onSkip?.();
               }}
-              className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white dark:bg-transparent border border-orange-200/60 dark:border-orange-500/30 text-orange-700 dark:text-orange-300 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
+              className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-orange-600/70 dark:text-orange-400/70 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
             >
               <span className="truncate">Omitir</span>
             </button>

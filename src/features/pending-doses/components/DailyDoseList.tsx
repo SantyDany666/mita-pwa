@@ -12,6 +12,7 @@ import {
   XCircle,
   Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
 import { useDoses } from "../hooks/useDoses";
 import {
   format,
@@ -67,7 +68,8 @@ export function DailyDoseList({
   selectedDate,
   onSetSnoozeDoseId,
 }: DailyDoseListProps) {
-  const { doses, isLoading, takeDose, skipDose } = useDoses(selectedDate);
+  const { doses, isLoading, takeDose, skipDose, undoDose } =
+    useDoses(selectedDate);
 
   if (isLoading) {
     return (
@@ -157,6 +159,36 @@ export function DailyDoseList({
     }
   });
 
+  const handleTake = async (dose: DoseWithReminder) => {
+    try {
+      await takeDose(dose.id);
+      toast.success(`Dosis de ${dose.reminders?.medicine_name} tomada`, {
+        action: {
+          label: "Deshacer",
+          onClick: () => undoDose(dose.id),
+        },
+        duration: 4000,
+      });
+    } catch {
+      toast.error("Error al tomar dosis");
+    }
+  };
+
+  const handleSkip = async (dose: DoseWithReminder) => {
+    try {
+      await skipDose(dose.id);
+      toast.info(`Dosis de ${dose.reminders?.medicine_name} omitida`, {
+        action: {
+          label: "Deshacer",
+          onClick: () => undoDose(dose.id),
+        },
+        duration: 4000,
+      });
+    } catch {
+      toast.error("Error al omitir dosis");
+    }
+  };
+
   const renderDoseCard = (dose: DoseWithReminder) => {
     let dateLabel: string | undefined;
 
@@ -182,8 +214,8 @@ export function DailyDoseList({
         takenTime={safeFormat(dose.taken_at)}
         skippedTime={safeFormat(dose.taken_at)}
         dateLabel={dateLabel}
-        onTake={() => takeDose(dose.id)}
-        onSkip={() => skipDose(dose.id)}
+        onTake={() => handleTake(dose)}
+        onSkip={() => handleSkip(dose)}
         onSnooze={() => onSetSnoozeDoseId(dose.id)}
       />
     );

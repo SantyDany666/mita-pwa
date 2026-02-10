@@ -120,11 +120,24 @@ export const useDoses = (selectedDate: Date) => {
     onSettled: onSettledRefetch,
   });
 
+  const undoDoseMutation = useMutation({
+    mutationFn: (doseId: string) => doseService.markAsPending(doseId),
+    onMutate: (doseId) =>
+      performOptimisticUpdate(doseId, (dose) => ({
+        ...dose,
+        status: "pending",
+        taken_at: null,
+      })),
+    onError: onErrorRollback,
+    onSettled: onSettledRefetch,
+  });
+
   return {
     doses: dosesQuery.data || [],
     isLoading: dosesQuery.isLoading,
     takeDose: takeDoseMutation.mutateAsync,
     skipDose: skipDoseMutation.mutateAsync,
     snoozeDose: snoozeDoseMutation.mutateAsync,
+    undoDose: undoDoseMutation.mutateAsync,
   };
 };

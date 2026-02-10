@@ -117,6 +117,57 @@ export const doseService = {
   },
 
   /**
+   * Revert a dose status to pending (Undo Take/Skip)
+   * Handles stock restoration if it was taken.
+   */
+  markAsPending: async (doseId: string): Promise<void> => {
+    // 1. Get the current dose state to check if we need to restore stock
+    const { data: dose, error: fetchError } = await supabase
+      .from("dose_events")
+      .select("*, reminders(*)")
+      .eq("id", doseId)
+      .single();
+
+    if (fetchError || !dose) throw fetchError || new Error("Dose not found");
+
+    // 2. Restore stock if it was "taken" and has stock config
+    if (dose.status === "taken") {
+      const reminder = dose.reminders;
+      if (
+        reminder &&
+        reminder.stock_config &&
+        typeof reminder.stock_config === "object"
+      ) {
+        const stockConfig = reminder.stock_config as {
+          stock?: number;
+          warningThreshold?: number;
+        };
+
+        if (stockConfig.stock !== undefined && stockConfig.stock !== null) {
+          const newStock = stockConfig.stock + 1; // Increment stock
+          const newConfig = { ...stockConfig, stock: newStock };
+
+          await supabase
+            .from("reminders")
+            .update({ stock_config: newConfig as unknown as Json })
+            .eq("id", reminder.id);
+        }
+      }
+    }
+
+    // 3. Update dose status to pending
+    const { error: updateError } = await supabase
+      .from("dose_events")
+      .update({
+        status: "pending",
+        taken_at: null,
+      })
+      .eq("id", doseId);
+
+    if (updateError) throw updateError;
+  },
+
+  /**
    * Snooze a dose (Reschedule)
    */
   snoozeDose: async (doseId: string, newDate: Date): Promise<void> => {
