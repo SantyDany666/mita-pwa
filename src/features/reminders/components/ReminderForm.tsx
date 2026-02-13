@@ -5,12 +5,11 @@ import {
   Package,
   ChevronRight,
 } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
 import { Controller, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { FrequencySelectionDrawer } from "./FrequencySelectionDrawer";
 import { getFrequencyLabel } from "../utils/frequency-utils";
-import { getDurationLabel, calculateEndDate } from "../utils/duration-utils";
+import { getDurationLabel } from "../utils/duration-utils";
 import { DurationSelectionDrawer } from "./DurationSelectionDrawer";
 import { InventorySelectionDrawer } from "./InventorySelectionDrawer";
 import { MedicineIconSelector } from "./MedicineIconSelector";
@@ -21,7 +20,7 @@ import { useReminderForm } from "../hooks/useReminderForm";
 import { ReminderFormValues } from "../utils/validation";
 import { useProfileStore } from "@/store/profile.store";
 import { useAuthStore } from "@/store/auth.store";
-import { reminderSchedulerService } from "../services/reminder-scheduler.service";
+import { useReminderMutations } from "../hooks/useReminderMutations";
 
 interface ReminderFormProps {
   initialValues?: Partial<ReminderFormValues>;
@@ -43,11 +42,13 @@ export function ReminderForm({
     formState: { errors, isValid, isSubmitting },
   } = useReminderForm({ initialValues });
 
-  const queryClient = useQueryClient();
   const watchedStartDate = useWatch({ control, name: "startDate" });
   const watchedDoseLogs = useWatch({ control, name: "doseLogs" });
   const { currentProfile } = useProfileStore();
   const { user } = useAuthStore();
+
+  const { createReminder, updateReminder } = useReminderMutations();
+  const isPending = createReminder.isPending || updateReminder.isPending;
 
   const handleFormSubmit = async (data: ReminderFormValues) => {
     if (!user || !currentProfile) {
@@ -56,68 +57,24 @@ export function ReminderForm({
     }
 
     try {
-      const endDate = calculateEndDate(data.startDate, data.duration);
-      const endDateIso = endDate ? endDate.toISOString() : null;
-
       if (mode === "create") {
-        await reminderSchedulerService.createReminder(
-          {
-            user_id: user.id,
-            profile_id: currentProfile.id,
-            medicine_name: data.name,
-            dose: data.dose,
-            unit: data.unit,
-            medicine_icon: data.medicineIcon,
-            schedule_config: {
-              frequency: data.frequency,
-              duration: data.duration,
-              startTime: data.startTime,
-              startDate: data.startDate,
-            },
-            start_date: data.startDate,
-            end_date: endDateIso,
-            status: "active",
-            stock_config: data.inventory,
-            indications: data.indications,
-          },
-          data.doseLogs,
-        );
-
-        await queryClient.invalidateQueries({ queryKey: ["reminders"] });
-        toast.success("Recordatorio creado con éxito");
-        window.history.back();
+        createReminder.mutate(data, {
+          onSuccess: () => onSubmit?.(data),
+        });
       } else {
         if (!reminderId) {
           toast.error("Error: ID de recordatorio no encontrado");
           return;
         }
-
-        await reminderSchedulerService.updateReminder(reminderId, {
-          medicine_name: data.name,
-          dose: data.dose,
-          unit: data.unit,
-          medicine_icon: data.medicineIcon,
-          schedule_config: {
-            frequency: data.frequency,
-            duration: data.duration,
-            startTime: data.startTime,
-            startDate: data.startDate,
+        updateReminder.mutate(
+          { id: reminderId, data },
+          {
+            onSuccess: () => onSubmit?.(data),
           },
-          start_date: data.startDate,
-          end_date: endDateIso,
-          stock_config: data.inventory,
-          indications: data.indications,
-        });
-
-        await queryClient.invalidateQueries({ queryKey: ["reminders"] });
-        toast.success("Recordatorio actualizado");
-        window.history.back();
+        );
       }
-
-      onSubmit?.(data);
     } catch (error) {
       console.error(error);
-      toast.error("Error al guardar el recordatorio");
     }
   };
 
@@ -418,10 +375,10 @@ export function ReminderForm({
       <footer className="sticky bottom-0 bg-[#F7F9FC] dark:bg-gray-950 p-4 pt-2">
         <button
           onClick={handleSubmit(handleFormSubmit)}
-          disabled={!isValid || isSubmitting}
+          disabled={!isValid || isSubmitting || isPending}
           className="w-full bg-[#054A91] text-white text-lg font-bold rounded-xl h-14 flex items-center justify-center transition-all hover:bg-[#054A91]/90 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#054A91]/20"
         >
-          {isSubmitting ? "Guardando..." : "Guardar Recordatorio"}
+          {isPending ? "Guardando..." : "Guardar Recordatorio"}
         </button>
       </footer>
     </div>

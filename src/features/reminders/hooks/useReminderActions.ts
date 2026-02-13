@@ -1,73 +1,35 @@
-import { useNavigate } from "@tanstack/react-router";
-import { reminderSchedulerService } from "../services/reminder-scheduler.service";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useReminderMutations } from "./useReminderMutations";
 
 export const useReminderActions = () => {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const { pauseReminder, resumeReminder, finishReminder, deleteReminder } =
+    useReminderMutations();
 
-  const pauseReminder = async (id: string) => {
-    try {
-      await reminderSchedulerService.pauseReminder(id);
-      toast.success("Recordatorio pausado");
-      await queryClient.invalidateQueries({ queryKey: ["reminders"] });
-    } catch (error) {
-      console.error(error);
-      toast.error("Error al pausar el recordatorio");
-    }
+  const handlePause = async (id: string) => {
+    return pauseReminder.mutateAsync(id);
   };
 
-  const resumeReminder = async (id: string) => {
-    try {
-      await reminderSchedulerService.resumeReminder(id);
-      toast.success("Recordatorio reanudado");
-      await queryClient.invalidateQueries({ queryKey: ["reminders"] });
-    } catch (error) {
-      console.error(error);
-      toast.error("Error al reanudar el recordatorio");
-    }
+  const handleResume = async (id: string) => {
+    return resumeReminder.mutateAsync(id);
   };
 
-  const finishReminder = async (id: string) => {
-    try {
-      await reminderSchedulerService.finishReminder(id);
-      toast.success("Recordatorio finalizado");
-      await queryClient.invalidateQueries({ queryKey: ["reminders"] });
-    } catch (error) {
-      console.error(error);
-      toast.error("Error al finalizar el recordatorio");
-    }
+  const handleFinish = async (id: string) => {
+    return finishReminder.mutateAsync(id);
   };
 
-  const reactivateReminder = async (id: string) => {
-    try {
-      await reminderSchedulerService.resumeReminder(id);
-      toast.success("Recordatorio reactivado");
-      await queryClient.invalidateQueries({ queryKey: ["reminders"] });
-    } catch (error) {
-      console.error(error);
-      toast.error("Error al reactivar el recordatorio");
-    }
+  const handleReactivate = async (id: string) => {
+    // Resume serves as reactivate in logic
+    return resumeReminder.mutateAsync(id);
   };
 
-  const deleteReminder = async (id: string) => {
-    try {
-      await reminderSchedulerService.deleteReminder(id);
-      toast.success("Recordatorio eliminado");
-      await queryClient.invalidateQueries({ queryKey: ["reminders"] });
-      navigate({ to: "/reminders" });
-    } catch (error) {
-      console.error(error);
-      toast.error("Error al eliminar el recordatorio");
-    }
+  const handleDelete = async (id: string) => {
+    return deleteReminder.mutateAsync(id);
   };
 
   return {
-    pauseReminder,
-    resumeReminder,
-    finishReminder,
-    reactivateReminder,
-    deleteReminder,
+    pauseReminder: handlePause,
+    resumeReminder: handleResume,
+    finishReminder: handleFinish,
+    reactivateReminder: handleReactivate,
+    deleteReminder: handleDelete,
   };
 };

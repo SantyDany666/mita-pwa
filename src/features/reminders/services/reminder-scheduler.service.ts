@@ -40,6 +40,9 @@ export const reminderSchedulerService = {
       }
     }
 
+    // Ensure we include the end of the last day by moving to the next day's start (exclusive upper bound)
+    finalEnd = addDays(finalEnd, 1);
+
     // 3. Generate Dates
     const config = reminder.schedule_config as unknown as ScheduleConfig;
     const doseDates = generateDoseSchedule(config, startDate, finalEnd);
@@ -111,6 +114,9 @@ export const reminderSchedulerService = {
       }
     }
 
+    // Ensure we include the end of the last day by moving to the next day's start (exclusive upper bound)
+    finalEnd = addDays(finalEnd, 1);
+
     // 4. Generate Dates
     const config = reminder.schedule_config as unknown as ScheduleConfig;
     const doseDates = generateDoseSchedule(config, generationStart, finalEnd);
@@ -176,6 +182,9 @@ export const reminderSchedulerService = {
         finalEnd = endDate;
       }
     }
+
+    // Ensure we include the end of the last day by moving to the next day's start (exclusive upper bound)
+    finalEnd = addDays(finalEnd, 1);
 
     const config = reminder.schedule_config as unknown as ScheduleConfig;
     const doseDates = generateDoseSchedule(config, generationStart, finalEnd);

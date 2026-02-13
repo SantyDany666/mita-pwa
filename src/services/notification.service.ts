@@ -98,7 +98,9 @@ export class NotificationService {
     extra?: Record<string, unknown>;
   }): Promise<void> {
     try {
-      // Check if we have permission first? The plugin usually handles this gracefully or throws.
+      // Check permission without requesting (assuming init was called)
+      const { display } = await LocalNotifications.checkPermissions();
+      if (display !== "granted") return;
 
       await LocalNotifications.schedule({
         notifications: [
@@ -136,10 +138,36 @@ export class NotificationService {
   }
 
   /**
-   * Gets all pending notifications (useful for debugging).
+   * Cancels multiple notifications by ID.
+   */
+  async cancelBatch(ids: number[]): Promise<void> {
+    if (ids.length === 0) return;
+    try {
+      const notifications = ids.map((id) => ({ id }));
+      await LocalNotifications.cancel({ notifications });
+    } catch (error) {
+      console.error(`Failed to cancel batch notifications:`, error);
+    }
+  }
+
+  /**
+   * Gets all pending notifications (useful for debugging and sync).
    */
   async getPending() {
     return await LocalNotifications.getPending();
+  }
+
+  /**
+   * Returns a set of currently scheduled notification IDs.
+   */
+  async getScheduledIds(): Promise<Set<number>> {
+    try {
+      const pending = await this.getPending();
+      return new Set(pending.notifications.map((n) => n.id));
+    } catch (error) {
+      console.error("Failed to get scheduled IDs:", error);
+      return new Set();
+    }
   }
 }
 
