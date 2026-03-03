@@ -1,53 +1,84 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { doseService } from "@/features/reminders/services/dose.service";
-import { useProfileStore } from "@/store/profile.store";
-import { startOfDay } from "date-fns";
 import type { Tables } from "@/types/database.types";
 
 export type DoseWithReminder = Tables<"dose_events"> & {
   reminders: Tables<"reminders"> | null;
 };
 
-export const useDoseMutations = (selectedDate?: Date) => {
+export const useDoseMutations = () => {
   const queryClient = useQueryClient();
-  const { currentProfile } = useProfileStore();
 
-  const queryKey =
-    selectedDate && currentProfile
-      ? ["doses", currentProfile.id, startOfDay(selectedDate).toISOString()]
-      : null;
+  // Note: We no longer need this specific queryKey for optimistic updates
+  // because we will update ALL cached dose lists matching ["doses"]
+  // with queryClient.setQueriesData.
 
   const performOptimisticUpdate = async (
     doseId: string,
     updateFn: (dose: DoseWithReminder) => DoseWithReminder,
   ) => {
+    // 1. Cancel outgoing refetches
     await queryClient.cancelQueries({ queryKey: ["doses"] });
+    await queryClient.cancelQueries({ queryKey: ["scheduler-pending-doses"] });
 
-    let previousDoses: DoseWithReminder[] | undefined;
+    // 2. Snapshot previous state
+    const previousDosesState = queryClient.getQueriesData<DoseWithReminder[]>({
+      queryKey: ["doses"],
+    });
+    const previousSchedulerState = queryClient.getQueriesData<
+      DoseWithReminder[]
+    >({ queryKey: ["scheduler-pending-doses"] });
 
-    if (queryKey) {
-      previousDoses = queryClient.getQueryData<DoseWithReminder[]>(queryKey);
+    // 3. Optimistically update ALL 'doses' lists
+    queryClient.setQueriesData<DoseWithReminder[]>(
+      { queryKey: ["doses"] },
+      (old) => {
+        if (!Array.isArray(old)) return old;
+        return old.map((dose) => (dose.id === doseId ? updateFn(dose) : dose));
+      },
+    );
 
-      queryClient.setQueryData(
-        queryKey,
-        (old: DoseWithReminder[] | undefined) => {
-          if (!old) return [];
-          return old.map((dose) =>
-            dose.id === doseId ? updateFn(dose) : dose,
-          );
-        },
-      );
-    }
-    return { previousDoses };
+    // 4. Optimistically update the scheduler list
+    queryClient.setQueriesData<DoseWithReminder[]>(
+      { queryKey: ["scheduler-pending-doses"] },
+      (old) => {
+        if (!Array.isArray(old)) return old;
+        return old.map((dose) => (dose.id === doseId ? updateFn(dose) : dose));
+      },
+    );
+
+    return { previousDosesState, previousSchedulerState };
   };
 
   const onErrorRollback = (
     _err: unknown,
     _variables: unknown,
-    context: { previousDoses?: DoseWithReminder[] } | undefined,
+    context:
+      | {
+          previousDosesState?: Array<
+            [
+              import("@tanstack/react-query").QueryKey,
+              DoseWithReminder[] | undefined,
+            ]
+          >;
+          previousSchedulerState?: Array<
+            [
+              import("@tanstack/react-query").QueryKey,
+              DoseWithReminder[] | undefined,
+            ]
+          >;
+        }
+      | undefined,
   ) => {
-    if (context?.previousDoses && queryKey) {
-      queryClient.setQueryData(queryKey, context.previousDoses);
+    if (context?.previousDosesState) {
+      context.previousDosesState.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+    }
+    if (context?.previousSchedulerState) {
+      context.previousSchedulerState.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
     }
   };
 

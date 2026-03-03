@@ -44,6 +44,7 @@ export function ReminderForm({
 
   const watchedStartDate = useWatch({ control, name: "startDate" });
   const watchedDoseLogs = useWatch({ control, name: "doseLogs" });
+  const watchedFrequency = useWatch({ control, name: "frequency" });
   const { currentProfile } = useProfileStore();
   const { user } = useAuthStore();
 
@@ -275,11 +276,11 @@ export function ReminderForm({
           <Controller
             control={control}
             name="duration"
-            render={({ field, formState }) => (
+            render={({ field }) => (
               <DurationSelectionDrawer
                 value={field.value}
                 onSelect={field.onChange}
-                frequency={formState.defaultValues?.frequency || ""}
+                frequency={watchedFrequency || ""}
                 startDate={watchedStartDate}
               >
                 <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[72px] py-2 justify-between transition-colors hover:bg-slate-50 dark:hover:bg-gray-800 cursor-pointer">

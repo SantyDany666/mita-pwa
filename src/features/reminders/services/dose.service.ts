@@ -26,18 +26,21 @@ export const doseService = {
   },
 
   /**
-   * Get, pending doses before a specific date (Overdue)
+   * Get past doses that are either pending (Overdue)
+   * or were resolved (taken/skipped) today.
    */
-  getOverduePending: async (
+  getPastDosesRelevantToday: async (
     profileId: string,
-    beforeDate: Date,
+    startOfToday: Date,
   ): Promise<(DoseEvent & { reminders: Tables<"reminders"> | null })[]> => {
     const { data, error } = await supabase
       .from("dose_events")
       .select("*, reminders(*)")
       .eq("profile_id", profileId)
-      .eq("status", "pending")
-      .lt("scheduled_at", beforeDate.toISOString())
+      .lt("scheduled_at", startOfToday.toISOString())
+      .or(
+        `status.eq.pending,and(status.in.(taken,skipped),taken_at.gte.${startOfToday.toISOString()})`,
+      )
       .order("scheduled_at", { ascending: true });
 
     if (error) throw error;

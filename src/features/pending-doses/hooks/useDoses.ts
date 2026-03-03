@@ -22,13 +22,13 @@ export const useDoses = (selectedDate: Date) => {
         end,
       );
 
-      // If viewing today, also fetch past overdue doses (before today)
+      // If viewing today, also fetch past doses relevant today (overdue or completed today)
       if (isToday(selectedDate)) {
-        const overdueDoses = await doseService.getOverduePending(
+        const pastRelevantDoses = await doseService.getPastDosesRelevantToday(
           currentProfile.id,
           start,
         );
-        return [...overdueDoses, ...dayDoses];
+        return [...pastRelevantDoses, ...dayDoses];
       }
 
       return dayDoses;
@@ -37,8 +37,7 @@ export const useDoses = (selectedDate: Date) => {
   });
 
   // Use the shared mutations hook
-  const { takeDose, skipDose, snoozeDose, undoDose } =
-    useDoseMutations(selectedDate);
+  const { takeDose, skipDose, snoozeDose, undoDose } = useDoseMutations();
 
   return {
     doses: dosesQuery.data || [],
