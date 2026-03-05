@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { App } from "@capacitor/app";
 import { useQuery } from "@tanstack/react-query";
 import { addDays, parseISO, isAfter } from "date-fns";
 import { useProfileStore } from "@/store/profile.store";
@@ -19,7 +18,7 @@ export const useNotificationScheduler = () => {
   const isMounted = useRef(false);
 
   // 1. Query Pending Doses (30 Days Window)
-  const { data: pendingDoses = [], refetch } = useQuery({
+  const { data: pendingDoses = [] } = useQuery({
     queryKey: ["scheduler-pending-doses", currentProfile?.id],
     queryFn: async () => {
       if (!currentProfile) return [];
@@ -39,18 +38,8 @@ export const useNotificationScheduler = () => {
     refetchOnWindowFocus: true, // Refetch when app comes to foreground (web)
   });
 
-  // 2. Handle App State Changes (Background -> Foreground)
-  useEffect(() => {
-    const listener = App.addListener("appStateChange", ({ isActive }) => {
-      if (isActive) {
-        refetch();
-      }
-    });
-
-    return () => {
-      listener.then((l) => l.remove());
-    };
-  }, [refetch]);
+  // 2. Removed manual AppStateChange listener because
+  // TanStack Query's focusManager now handles refetching globally on foreground.
 
   // 3. The Core Scheduler Logic
   useEffect(() => {

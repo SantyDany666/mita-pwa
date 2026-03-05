@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { SocialLogin } from "@capgo/capacitor-social-login";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "./lib/capacitor-query"; // Initialize Capacitor focusManager integration
 import "./index.css";
 
 // Import the generated route tree
