@@ -21,6 +21,21 @@ export const reminderSchedulerService = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _doseLogs?: Record<string, "taken" | "skipped">, // Historical logs - TODO: Implement log matching logic
   ) => {
+    // Pre-process stock_config to reset alert flag if needed
+    if (
+      reminderData.stock_config &&
+      typeof reminderData.stock_config === "object"
+    ) {
+      const config = reminderData.stock_config as Record<string, unknown>;
+      if (
+        typeof config.stock === "number" &&
+        typeof config.stockThreshold === "number" &&
+        config.stock > config.stockThreshold
+      ) {
+        config.lowStockAlertSent = false;
+      }
+    }
+
     // 1. Create the Reminder
     const reminder = await reminderService.create(reminderData);
 
@@ -90,6 +105,18 @@ export const reminderSchedulerService = {
    * Update a reminder and regenerate future doses
    */
   updateReminder: async (id: string, updates: ReminderUpdate) => {
+    // Pre-process stock_config to reset alert flag if replenished
+    if (updates.stock_config && typeof updates.stock_config === "object") {
+      const config = updates.stock_config as Record<string, unknown>;
+      if (
+        typeof config.stock === "number" &&
+        typeof config.stockThreshold === "number" &&
+        config.stock > config.stockThreshold
+      ) {
+        config.lowStockAlertSent = false;
+      }
+    }
+
     // 1. Update the Reminder
     const reminder = await reminderService.update(id, updates);
 

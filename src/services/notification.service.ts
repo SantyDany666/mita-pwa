@@ -138,6 +138,37 @@ export class NotificationService {
   }
 
   /**
+   * Triggers an immediate local notification to alert the user about low medicine stock.
+   */
+  async triggerLowInventoryAlert(
+    medicineName: string,
+    stock: number,
+  ): Promise<void> {
+    try {
+      const { display } = await LocalNotifications.checkPermissions();
+      if (display !== "granted") return;
+
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            id: Math.floor(Math.random() * 1000000) + 1000000, // Random ephemeral ID
+            title: "⚠️ Inventario Bajo",
+            body: `Te quedan ${stock} unidades de ${medicineName}. ¡Es hora de reabastecer!`,
+            channelId: NotificationService.CHANNEL_ID,
+            smallIcon: "ic_stat_notification",
+            iconColor: "#EAB308", // Warning color (Yellow/Orange)
+          },
+        ],
+      });
+    } catch (error) {
+      console.error(
+        `Failed to trigger low inventory alert for ${medicineName}:`,
+        error,
+      );
+    }
+  }
+
+  /**
    * Cancels multiple notifications by ID.
    */
   async cancelBatch(ids: number[]): Promise<void> {

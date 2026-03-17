@@ -48,9 +48,16 @@ export const doseService = {
   },
 
   /**
-   * Mark a dose as taken and update inventory if applicable
+   * Mark a dose as taken and update inventory if applicable.
+   * Modulo returning an alert trigger object if stock gets dangerously low.
    */
-  markAsTaken: async (doseId: string): Promise<void> => {
+  markAsTaken: async (
+    doseId: string,
+  ): Promise<{
+    triggerInventoryAlert: boolean;
+    medicineName?: string;
+    remainingStock?: number;
+  }> => {
     const now = new Date().toISOString();
 
     // 1. Get the dose and its reminder to check inventory
@@ -84,7 +91,9 @@ export const doseService = {
       // But for DB types it's Json.
       const stockConfig = reminder.stock_config as {
         stock?: number;
-        warningThreshold?: number;
+        stockThreshold?: number;
+        stockAlertEnabled?: boolean;
+        lowStockAlertSent?: boolean;
       };
 
       if (
@@ -93,14 +102,43 @@ export const doseService = {
         stockConfig.stock > 0
       ) {
         const newStock = stockConfig.stock - 1;
-        const newConfig = { ...stockConfig, stock: newStock };
+
+        let shouldTriggerAlert = false;
+        let newAlertSentFlag = stockConfig.lowStockAlertSent || false;
+
+        // Check against threshold if alert is enabled
+        if (
+          stockConfig.stockAlertEnabled &&
+          stockConfig.stockThreshold !== undefined &&
+          newStock <= stockConfig.stockThreshold &&
+          !stockConfig.lowStockAlertSent
+        ) {
+          shouldTriggerAlert = true;
+          newAlertSentFlag = true; // Mark as sent to avoid spam
+        }
+
+        const newConfig = {
+          ...stockConfig,
+          stock: newStock,
+          lowStockAlertSent: newAlertSentFlag,
+        };
 
         await supabase
           .from("reminders")
           .update({ stock_config: newConfig as unknown as Json })
           .eq("id", reminder.id);
+
+        if (shouldTriggerAlert) {
+          return {
+            triggerInventoryAlert: true,
+            medicineName: reminder.medicine_name,
+            remainingStock: newStock,
+          };
+        }
       }
     }
+
+    return { triggerInventoryAlert: false };
   },
 
   /**
@@ -207,7 +245,11 @@ export const doseService = {
   createSosDose: async (
     reminderId: string,
     profileId: string,
-  ): Promise<void> => {
+  ): Promise<{
+    triggerInventoryAlert: boolean;
+    medicineName?: string;
+    remainingStock?: number;
+  }> => {
     const now = new Date().toISOString();
     const {
       data: { user },
@@ -241,7 +283,9 @@ export const doseService = {
     if (reminder.stock_config && typeof reminder.stock_config === "object") {
       const stockConfig = reminder.stock_config as {
         stock?: number;
-        warningThreshold?: number;
+        stockThreshold?: number;
+        stockAlertEnabled?: boolean;
+        lowStockAlertSent?: boolean;
       };
 
       if (
@@ -250,13 +294,50 @@ export const doseService = {
         stockConfig.stock > 0
       ) {
         const newStock = stockConfig.stock - 1;
-        const newConfig = { ...stockConfig, stock: newStock };
+
+        let shouldTriggerAlert = false;
+        let newAlertSentFlag = stockConfig.lowStockAlertSent || false;
+
+        // Check against threshold if alert is enabled
+        if (
+          stockConfig.stockAlertEnabled &&
+          stockConfig.stockThreshold !== undefined &&
+          newStock <= stockConfig.stockThreshold &&
+          !stockConfig.lowStockAlertSent
+        ) {
+          shouldTriggerAlert = true;
+          newAlertSentFlag = true; // Mark as sent to avoid spam
+        }
+
+        const newConfig = {
+          ...stockConfig,
+          stock: newStock,
+          lowStockAlertSent: newAlertSentFlag,
+        };
 
         await supabase
           .from("reminders")
           .update({ stock_config: newConfig as unknown as Json })
           .eq("id", reminderId);
+
+        if (shouldTriggerAlert) {
+          // Because reminder single select does not return medicine_name in original code,
+          // We need an additional fetch or just return standard "Medicamento"
+          const { data: reminderData } = await supabase
+            .from("reminders")
+            .select("medicine_name")
+            .eq("id", reminderId)
+            .single();
+
+          return {
+            triggerInventoryAlert: true,
+            medicineName: reminderData?.medicine_name || "Medicamento",
+            remainingStock: newStock,
+          };
+        }
       }
     }
+
+    return { triggerInventoryAlert: false };
   },
 };

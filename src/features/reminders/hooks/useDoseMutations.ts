@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { doseService } from "@/features/reminders/services/dose.service";
+import { notificationService } from "@/services/notification.service";
 import type { Tables } from "@/types/database.types";
 
 export type DoseWithReminder = Tables<"dose_events"> & {
@@ -96,6 +97,19 @@ export const useDoseMutations = () => {
         taken_at: new Date().toISOString(),
       })),
     onError: onErrorRollback,
+    onSuccess: (data) => {
+      // Data returns the payload from doseService.markAsTaken
+      if (
+        data?.triggerInventoryAlert &&
+        data.medicineName &&
+        data.remainingStock !== undefined
+      ) {
+        notificationService.triggerLowInventoryAlert(
+          data.medicineName,
+          data.remainingStock,
+        );
+      }
+    },
     onSettled: onSettledRefetch,
   });
 
