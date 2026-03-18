@@ -44,7 +44,6 @@ export function ReminderDetail({
   frequency,
   duration,
   indications,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   stock,
   icon = "capsule",
   startDateLabel,
@@ -88,187 +87,189 @@ export function ReminderDetail({
   };
 
   return (
-    <div className="relative flex h-full min-h-screen w-full flex-col bg-white dark:bg-gray-950 font-sans">
-      <AppHeader
-        title="Detalle del Recordatorio"
-        className="border-gray-100 dark:border-gray-800 shadow-none bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm"
-        titleClassName="text-[#054A91] dark:text-white"
-      />
+    <div className="relative flex h-full min-h-screen w-full flex-col bg-[#F7F9FC] dark:bg-gray-950 font-sans">
+      <div className="flex-1 flex flex-col w-full max-w-md mx-auto relative">
+        <AppHeader
+          title="Detalle del Recordatorio"
+          className="border-none shadow-none bg-[#F7F9FC] dark:bg-gray-950 pt-[max(1rem,env(safe-area-inset-top))] pb-2"
+          titleClassName="text-[#054A91] dark:text-white"
+        />
 
-      <main className="flex-grow px-5 pt-6 pb-8">
-        <div className="flex flex-col items-center gap-4 mb-8">
-          <div className="flex items-center justify-center w-24 h-24 rounded-2xl bg-[#054A91]/10 dark:bg-[#054A91]/20 text-[#054A91] dark:text-[#81A4CD]">
-            <MedicineIconDisplay type={icon} className="w-12 h-12" />
+        <main className="flex-grow px-5 pt-6 pb-8">
+          <div className="flex flex-col items-center gap-4 mb-8">
+            <div className="flex items-center justify-center w-24 h-24 rounded-2xl bg-[#054A91]/10 dark:bg-[#054A91]/20 text-[#054A91] dark:text-[#81A4CD]">
+              <MedicineIconDisplay type={icon} className="w-12 h-12" />
+            </div>
+            <div className="text-center flex flex-col items-center gap-2">
+              <div>
+                <h2 className="text-[#054A91] dark:text-white text-2xl font-bold leading-tight">
+                  {name}
+                </h2>
+                <p className="text-gray-500 dark:text-gray-400 text-base font-medium mt-1">
+                  {dose} {unit}
+                </p>
+              </div>
+              {getStatusBadge()}
+            </div>
           </div>
-          <div className="text-center flex flex-col items-center gap-2">
-            <div>
-              <h2 className="text-[#054A91] dark:text-white text-2xl font-bold leading-tight">
-                {name}
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 text-base font-medium mt-1">
-                {dose} {unit}
-              </p>
-            </div>
-            {getStatusBadge()}
-          </div>
-        </div>
 
-        <div className="flex flex-col gap-y-4">
-          <section className="rounded-xl border border-slate-100 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-900/50 p-4 space-y-4">
-            {/* Start Info */}
-            <div className="flex items-center gap-4">
-              <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD]">
-                <CalendarClock className="w-5 h-5" />
-              </div>
-              <div className="flex flex-col text-left">
-                <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
-                  Inicio
-                </span>
-                <p className="text-slate-900 dark:text-white text-base font-medium leading-tight capitalize">
-                  {startDateLabel || "Hoy"}{" "}
-                  {startTime ? `a las ${startTime}` : ""}
-                </p>
-              </div>
-            </div>
-
-            {/* Frequency */}
-            <div className="flex items-center gap-4">
-              <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD]">
-                <Repeat className="w-5 h-5" />
-              </div>
-              <div className="flex flex-col text-left">
-                <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
-                  Frecuencia
-                </span>
-                <p className="text-slate-900 dark:text-white text-base font-medium leading-tight">
-                  {frequency}
-                </p>
-              </div>
-            </div>
-
-            {/* Duration */}
-            <div className="flex items-center gap-4">
-              <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD]">
-                <CalendarRange className="w-5 h-5" />
-              </div>
-              <div className="flex flex-col text-left">
-                <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
-                  Duración
-                </span>
-                <p className="text-slate-900 dark:text-white text-base font-medium leading-tight">
-                  {duration}
-                </p>
-              </div>
-            </div>
-
-            {/* Inventory (Conditional) */}
-            {stock !== undefined && (
+          <div className="flex flex-col gap-y-4">
+            <section className="rounded-xl border border-slate-100 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-900/50 p-4 space-y-4">
+              {/* Start Info */}
               <div className="flex items-center gap-4">
                 <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD]">
-                  <Package className="w-5 h-5" />
+                  <CalendarClock className="w-5 h-5" />
                 </div>
                 <div className="flex flex-col text-left">
                   <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
-                    Inventario
+                    Inicio
+                  </span>
+                  <p className="text-slate-900 dark:text-white text-base font-medium leading-tight capitalize">
+                    {startDateLabel || "Hoy"}{" "}
+                    {startTime ? `a las ${startTime}` : ""}
+                  </p>
+                </div>
+              </div>
+
+              {/* Frequency */}
+              <div className="flex items-center gap-4">
+                <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD]">
+                  <Repeat className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col text-left">
+                  <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
+                    Frecuencia
                   </span>
                   <p className="text-slate-900 dark:text-white text-base font-medium leading-tight">
-                    {stock > 0 ? `${stock} unidades` : "Sin stock"}
+                    {frequency}
                   </p>
                 </div>
               </div>
-            )}
-          </section>
 
-          {/* Indications */}
-          {indications && (
-            <section className="rounded-xl border border-slate-100 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-900/50 p-4">
-              <div className="flex items-start gap-4">
-                <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD] mt-0.5">
-                  <Utensils className="w-5 h-5" />
+              {/* Duration */}
+              <div className="flex items-center gap-4">
+                <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD]">
+                  <CalendarRange className="w-5 h-5" />
                 </div>
                 <div className="flex flex-col text-left">
                   <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
-                    Indicaciones
+                    Duración
                   </span>
-                  <p className="text-slate-900 dark:text-white text-base font-normal leading-normal mt-0.5">
-                    {indications}
+                  <p className="text-slate-900 dark:text-white text-base font-medium leading-tight">
+                    {duration}
                   </p>
                 </div>
               </div>
+
+              {/* Inventory (Conditional) */}
+              {stock !== undefined && (
+                <div className="flex items-center gap-4">
+                  <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD]">
+                    <Package className="w-5 h-5" />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
+                      Inventario
+                    </span>
+                    <p className="text-slate-900 dark:text-white text-base font-medium leading-tight">
+                      {stock > 0 ? `${stock} unidades` : "Sin stock"}
+                    </p>
+                  </div>
+                </div>
+              )}
             </section>
-          )}
-        </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="sticky bottom-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-t border-slate-100 dark:border-gray-800 p-4">
-        <div className="flex flex-col gap-3">
-          {status !== "finished" && (
-            <Link
-              to="/reminders/$id/edit"
-              params={{ id }}
-              className="w-full flex items-center justify-center h-12 rounded-xl bg-[#054A91] shadow-lg shadow-[#054A91]/20 transition-transform active:scale-95 hover:bg-[#054A91]/90"
-            >
-              <Pencil className="w-4 h-4 mr-2 text-white" />
-              <span className="text-white text-base font-semibold">
-                Editar Recordatorio
-              </span>
-            </Link>
-          )}
-
-          <div className="grid grid-cols-2 gap-3">
-            {/* Action 1: Pause/Resume/Reactivate */}
-            {status === "active" && (
-              <button
-                onClick={onPause}
-                className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-[#054A91]/30 dark:border-[#81A4CD]/50 hover:bg-[#054A91]/5 dark:hover:bg-[#054A91]/20 transition-colors text-[#054A91] dark:text-[#81A4CD]"
-              >
-                <Pause className="w-4 h-4 mr-2" />
-                <span className="text-base font-medium">Pausar</span>
-              </button>
-            )}
-
-            {status === "paused" && (
-              <button
-                onClick={onResume}
-                className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-[#054A91]/30 dark:border-[#81A4CD]/50 hover:bg-[#054A91]/5 dark:hover:bg-[#054A91]/20 transition-colors text-[#054A91] dark:text-[#81A4CD]"
-              >
-                <Play className="w-4 h-4 mr-2" />
-                <span className="text-base font-medium">Reanudar</span>
-              </button>
-            )}
-
-            {status === "finished" && (
-              <button
-                onClick={onReactivate}
-                className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-[#054A91]/30 dark:border-[#81A4CD]/50 hover:bg-[#054A91]/5 dark:hover:bg-[#054A91]/20 transition-colors text-[#054A91] dark:text-[#81A4CD]"
-              >
-                <Clock className="w-4 h-4 mr-2" />
-                <span className="text-base font-medium">Reactivar</span>
-              </button>
-            )}
-
-            {/* Action 2: Finish/Delete */}
-            {status !== "finished" ? (
-              <button
-                onClick={onFinish}
-                className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300"
-              >
-                <Archive className="w-4 h-4 mr-2" />
-                <span className="text-base font-medium">Finalizar</span>
-              </button>
-            ) : (
-              <button
-                onClick={onDelete}
-                className="w-full flex items-center justify-center h-12 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900 hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors text-red-600 dark:text-red-400"
-              >
-                <Archive className="w-4 h-4 mr-2" />
-                <span className="text-base font-medium">Eliminar</span>
-              </button>
+            {/* Indications */}
+            {indications && (
+              <section className="rounded-xl border border-slate-100 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-900/50 p-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex shrink-0 items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 text-[#054A91] dark:text-[#81A4CD] mt-0.5">
+                    <Utensils className="w-5 h-5" />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs text-slate-500 dark:text-gray-400 font-medium uppercase tracking-wide">
+                      Indicaciones
+                    </span>
+                    <p className="text-slate-900 dark:text-white text-base font-normal leading-normal mt-0.5">
+                      {indications}
+                    </p>
+                  </div>
+                </div>
+              </section>
             )}
           </div>
-        </div>
-      </footer>
+        </main>
+
+        {/* Footer */}
+        <footer className="sticky bottom-0 bg-transparent border-none px-4 pt-4 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] w-full max-w-md mx-auto relative pointer-events-none">
+          <div className="flex flex-col gap-3 pointer-events-auto">
+            {status !== "finished" && (
+              <Link
+                to="/reminders/$id/edit"
+                params={{ id }}
+                className="w-full flex items-center justify-center h-12 rounded-xl bg-[#054A91] shadow-lg shadow-[#054A91]/20 transition-transform active:scale-95 hover:bg-[#054A91]/90"
+              >
+                <Pencil className="w-4 h-4 mr-2 text-white" />
+                <span className="text-white text-base font-semibold">
+                  Editar Recordatorio
+                </span>
+              </Link>
+            )}
+
+            <div className="grid grid-cols-2 gap-3">
+              {/* Action 1: Pause/Resume/Reactivate */}
+              {status === "active" && (
+                <button
+                  onClick={onPause}
+                  className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-[#054A91]/30 dark:border-[#81A4CD]/50 hover:bg-[#054A91]/5 dark:hover:bg-[#054A91]/20 transition-colors text-[#054A91] dark:text-[#81A4CD]"
+                >
+                  <Pause className="w-4 h-4 mr-2" />
+                  <span className="text-base font-medium">Pausar</span>
+                </button>
+              )}
+
+              {status === "paused" && (
+                <button
+                  onClick={onResume}
+                  className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-[#054A91]/30 dark:border-[#81A4CD]/50 hover:bg-[#054A91]/5 dark:hover:bg-[#054A91]/20 transition-colors text-[#054A91] dark:text-[#81A4CD]"
+                >
+                  <Play className="w-4 h-4 mr-2" />
+                  <span className="text-base font-medium">Reanudar</span>
+                </button>
+              )}
+
+              {status === "finished" && (
+                <button
+                  onClick={onReactivate}
+                  className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-[#054A91]/30 dark:border-[#81A4CD]/50 hover:bg-[#054A91]/5 dark:hover:bg-[#054A91]/20 transition-colors text-[#054A91] dark:text-[#81A4CD]"
+                >
+                  <Clock className="w-4 h-4 mr-2" />
+                  <span className="text-base font-medium">Reactivar</span>
+                </button>
+              )}
+
+              {/* Action 2: Finish/Delete */}
+              {status !== "finished" ? (
+                <button
+                  onClick={onFinish}
+                  className="w-full flex items-center justify-center h-12 rounded-xl bg-white dark:bg-transparent border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300"
+                >
+                  <Archive className="w-4 h-4 mr-2" />
+                  <span className="text-base font-medium">Finalizar</span>
+                </button>
+              ) : (
+                <button
+                  onClick={onDelete}
+                  className="w-full flex items-center justify-center h-12 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900 hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors text-red-600 dark:text-red-400"
+                >
+                  <Archive className="w-4 h-4 mr-2" />
+                  <span className="text-base font-medium">Eliminar</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }

@@ -11,11 +11,11 @@ interface RemindersLayoutProps {
 export function RemindersLayout({ children }: RemindersLayoutProps) {
   return (
     <div className="relative flex h-dvh w-full flex-col bg-white dark:bg-gray-900 overflow-hidden font-sans">
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-md mx-auto relative">
         <div className="sticky top-0 z-30 w-full bg-white dark:bg-gray-900 border-b border-transparent transition-all">
           <AppHeader
             title="Recordatorios"
-            className="shadow-none bg-transparent pt-4 pb-2 relative z-20 border-none"
+            className="shadow-none bg-transparent pt-[max(1rem,env(safe-area-inset-top))] pb-2 relative z-20 border-none"
             titleClassName="text-[#054A91] dark:text-white"
             leftAction={
               <Link to="/pending-doses" search={{ view: "today" }}>
@@ -27,14 +27,14 @@ export function RemindersLayout({ children }: RemindersLayoutProps) {
           />
         </div>
 
-        <div className="flex-1 pb-32">{children}</div>
+        <div className="flex-1 pb-32 w-full">{children}</div>
       </div>
 
       <FabSpeedDial />
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 pb-2 z-40">
-        <div className="flex items-center justify-around h-16">
+      <div className="fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 pb-[max(0.5rem,env(safe-area-inset-bottom))] z-40 flex justify-center left-0 right-0">
+        <div className="flex items-center justify-around h-16 w-full max-w-md">
           <Link
             to="/pending-doses"
             search={{ view: "today" }}

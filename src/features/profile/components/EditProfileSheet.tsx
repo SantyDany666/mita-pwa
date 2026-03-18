@@ -118,7 +118,8 @@ export const EditProfileSheet = ({ open, onOpenChange, profile }: EditProfileShe
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} dismissible={true}>
-      <DrawerContent className="h-[90dvh] flex flex-col bg-white dark:bg-gray-900 border-none rounded-t-[20px]">
+      <DrawerContent className="h-[90dvh] flex flex-col bg-white dark:bg-gray-900 border-none rounded-t-[20px] outline-none pb-[env(safe-area-inset-bottom)]">
+        <div className="mx-auto w-full max-w-md flex flex-col flex-1 overflow-hidden">
 
         {/* Header */}
         <DrawerHeader className="px-6 pt-2 pb-4 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 rounded-t-[20px] shrink-0">
@@ -215,6 +216,7 @@ export const EditProfileSheet = ({ open, onOpenChange, profile }: EditProfileShe
             </Button>
           </div>
         </DrawerFooter>
+        </div>
       </DrawerContent>
     </Drawer>
   )

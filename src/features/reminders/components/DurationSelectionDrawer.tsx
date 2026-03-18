@@ -96,8 +96,8 @@ export function DurationSelectionDrawer({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
-      <DrawerContent className="bg-white dark:bg-gray-900 dark:border-gray-800 max-h-[90vh] flex flex-col">
-        <div className="mx-auto w-full max-w-sm flex flex-col flex-1 overflow-hidden">
+      <DrawerContent className="bg-white dark:bg-gray-900 dark:border-gray-800 max-h-[90vh] flex flex-col outline-none pb-[env(safe-area-inset-bottom)]">
+        <div className="mx-auto w-full max-w-md flex flex-col flex-1 overflow-hidden">
           {/* HEADER */}
           <DrawerHeader className="pb-0 shrink-0 relative">
             {step === "config" && (

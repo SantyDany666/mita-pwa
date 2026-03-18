@@ -81,21 +81,15 @@ export function ReminderForm({
 
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col bg-[#F7F9FC] dark:bg-gray-950 font-sans">
-      {/* Sticky Header */}
-      <AppHeader
-        title={mode === "create" ? "Nuevo Recordatorio" : "Editar Recordatorio"}
-        className="border-gray-100 dark:border-gray-800 shadow-none bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm"
-        titleClassName="text-[#054A91] dark:text-white"
-        rightAction={
-          <button onClick={() => window.history.back()} type="button">
-            <p className="text-[#00B8A5] text-base font-bold leading-normal tracking-[0.015em] shrink-0">
-              Cancelar
-            </p>
-          </button>
-        }
-      />
+      <div className="flex-1 flex flex-col w-full max-w-md mx-auto relative">
+        {/* Sticky Header */}
+        <AppHeader
+          title={mode === "create" ? "Nuevo Recordatorio" : "Editar Recordatorio"}
+          className="border-none shadow-none bg-[#F7F9FC] dark:bg-gray-950 pt-[max(1rem,env(safe-area-inset-top))] pb-2"
+          titleClassName="text-[#054A91] dark:text-white"
+        />
 
-      <main className="flex-grow px-4 py-4 space-y-6 overflow-y-auto">
+        <main className="flex-grow px-4 py-4 space-y-6 overflow-y-auto">
         {/* Section 1: Medicine Details */}
         <section className="flex flex-col gap-4 bg-white dark:bg-gray-900 p-5 rounded-xl border border-slate-200 dark:border-gray-800 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
           <h2 className="text-[#054A91] dark:text-[#81A4CD] font-semibold text-lg">
@@ -370,18 +364,19 @@ export function ReminderForm({
             />
           </label>
         </section>
-      </main>
+        </main>
 
-      {/* Sticky Footer */}
-      <footer className="sticky bottom-0 bg-[#F7F9FC] dark:bg-gray-950 p-4 pt-2">
-        <button
-          onClick={handleSubmit(handleFormSubmit)}
-          disabled={!isValid || isSubmitting || isPending}
-          className="w-full bg-[#054A91] text-white text-lg font-bold rounded-xl h-14 flex items-center justify-center transition-all hover:bg-[#054A91]/90 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#054A91]/20"
-        >
-          {isPending ? "Guardando..." : "Guardar Recordatorio"}
-        </button>
-      </footer>
+        {/* Sticky Footer */}
+        <footer className="sticky bottom-0 bg-transparent px-4 pt-2 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] w-full max-w-md mx-auto relative pointer-events-none">
+          <button
+            onClick={handleSubmit(handleFormSubmit)}
+            disabled={!isValid || isSubmitting || isPending}
+            className="w-full bg-[#054A91] text-white text-lg font-bold rounded-xl h-14 flex items-center justify-center transition-all hover:bg-[#054A91]/90 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#054A91]/20 pointer-events-auto"
+          >
+            {isPending ? "Guardando..." : "Guardar Recordatorio"}
+          </button>
+        </footer>
+      </div>
     </div>
   );
 }

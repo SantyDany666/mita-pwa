@@ -11,8 +11,11 @@ export function FabSpeedDial() {
 
   return (
     <>
-      <div className="fixed bottom-24 right-6 z-40 flex flex-col items-end gap-3">
-        {/* Menu Items */}
+      {/* Wrapper to constrain FAB to the max-w-md container */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none pb-[env(safe-area-inset-bottom)]">
+        <div className="w-full max-w-md relative">
+          <div className="absolute bottom-24 right-6 flex flex-col items-end gap-3 pointer-events-auto">
+            {/* Menu Items */}
         {isOpen && (
           <div className="flex flex-col items-end gap-3 animate-in slide-in-from-bottom-2 fade-in duration-200">
             {/* Quick Dose Action */}
@@ -62,6 +65,8 @@ export function FabSpeedDial() {
             }`}
           />
         </button>
+          </div>
+        </div>
       </div>
 
       {/* Embedded Drawer */}

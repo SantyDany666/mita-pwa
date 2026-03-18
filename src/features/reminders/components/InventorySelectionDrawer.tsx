@@ -79,8 +79,8 @@ export function InventorySelectionDrawer({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
-      <DrawerContent className="bg-white dark:bg-gray-900 dark:border-gray-800 flex flex-col h-[85vh]">
-        <div className="mx-auto w-full max-w-sm flex flex-col flex-1 overflow-hidden relative">
+      <DrawerContent className="bg-white dark:bg-gray-900 dark:border-gray-800 flex flex-col h-[85vh] outline-none pb-[env(safe-area-inset-bottom)]">
+        <div className="mx-auto w-full max-w-md flex flex-col flex-1 overflow-hidden relative">
           <DrawerHeader className="pb-0 shrink-0">
             <DrawerTitle className="text-center text-lg font-bold text-[#054A91] dark:text-[#81A4CD] pt-2">
               Inventario y Alertas

@@ -17,7 +17,7 @@ export function MedicineIconSelector({
       <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal">
         Presentación
       </p>
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4">
         {MEDICINE_ICONS.map((item) => {
           const isSelected = selected === item.id;
           const Icon = item.icon;

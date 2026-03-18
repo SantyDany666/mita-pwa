@@ -49,8 +49,8 @@ export function StartSelectionDrawer({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
-      <DrawerContent className="bg-white dark:bg-gray-900 dark:border-gray-800 max-h-[90vh] flex flex-col">
-        <div className="mx-auto w-full max-w-sm flex flex-col flex-1 overflow-hidden">
+      <DrawerContent className="bg-white dark:bg-gray-900 dark:border-gray-800 max-h-[90vh] flex flex-col outline-none pb-[env(safe-area-inset-bottom)]">
+        <div className="mx-auto w-full max-w-md flex flex-col flex-1 overflow-hidden">
           <DrawerHeader className="pb-0 shrink-0">
             <DrawerTitle className="text-center text-lg font-bold text-[#054A91] dark:text-[#81A4CD] pt-2">
               ¿Cuándo inicias el tratamiento?

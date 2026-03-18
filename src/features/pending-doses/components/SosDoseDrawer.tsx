@@ -67,8 +67,8 @@ export function SosDoseDrawer({ open, onOpenChange }: SosDoseDrawerProps) {
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
-        <div className="mx-auto w-full max-w-sm">
+      <DrawerContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 w-full outline-none pb-[env(safe-area-inset-bottom)]">
+        <div className="mx-auto w-full max-w-md">
           <DrawerHeader>
             <DrawerTitle className="text-center text-[#054A91] dark:text-[#81A4CD] text-xl font-bold">
               Botiquín (SOS)
