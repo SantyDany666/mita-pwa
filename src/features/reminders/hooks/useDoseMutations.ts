@@ -22,6 +22,7 @@ export const useDoseMutations = () => {
     // 1. Cancel outgoing refetches
     await queryClient.cancelQueries({ queryKey: ["doses"] });
     await queryClient.cancelQueries({ queryKey: ["scheduler-pending-doses"] });
+    await queryClient.cancelQueries({ queryKey: ["dose-detail", doseId] });
 
     // 2. Snapshot previous state
     const previousDosesState = queryClient.getQueriesData<DoseWithReminder[]>({
@@ -30,6 +31,10 @@ export const useDoseMutations = () => {
     const previousSchedulerState = queryClient.getQueriesData<
       DoseWithReminder[]
     >({ queryKey: ["scheduler-pending-doses"] });
+    const previousDetailState = queryClient.getQueryData<DoseWithReminder>([
+      "dose-detail",
+      doseId,
+    ]);
 
     // 3. Optimistically update ALL 'doses' lists
     queryClient.setQueriesData<DoseWithReminder[]>(
@@ -49,12 +54,20 @@ export const useDoseMutations = () => {
       },
     );
 
-    return { previousDosesState, previousSchedulerState };
+    // 5. Optimistically update the specific detail if it exists
+    if (previousDetailState) {
+      queryClient.setQueryData<DoseWithReminder>(
+        ["dose-detail", doseId],
+        updateFn(previousDetailState),
+      );
+    }
+
+    return { previousDosesState, previousSchedulerState, previousDetailState };
   };
 
   const onErrorRollback = (
     _err: unknown,
-    _variables: unknown,
+    _variables: string | { doseId: string; date: Date },
     context:
       | {
           previousDosesState?: Array<
@@ -69,6 +82,7 @@ export const useDoseMutations = () => {
               DoseWithReminder[] | undefined,
             ]
           >;
+          previousDetailState?: DoseWithReminder;
         }
       | undefined,
   ) => {
@@ -82,11 +96,24 @@ export const useDoseMutations = () => {
         queryClient.setQueryData(queryKey, data);
       });
     }
+    if (context?.previousDetailState && _variables) {
+      const doseId =
+        typeof _variables === "string" ? _variables : _variables.doseId;
+      if (doseId) {
+        queryClient.setQueryData(
+          ["dose-detail", doseId],
+          context.previousDetailState,
+        );
+      }
+    }
   };
 
-  const onSettledRefetch = () => {
+  const onSettledRefetch = (doseId?: string) => {
     queryClient.invalidateQueries({ queryKey: ["doses"] });
     queryClient.invalidateQueries({ queryKey: ["scheduler-pending-doses"] });
+    if (doseId) {
+      queryClient.invalidateQueries({ queryKey: ["dose-detail", doseId] });
+    }
   };
 
   const takeDoseMutation = useMutation({
@@ -113,7 +140,7 @@ export const useDoseMutations = () => {
         );
       }
     },
-    onSettled: onSettledRefetch,
+    onSettled: (_data, _error, doseId) => onSettledRefetch(doseId),
   });
 
   const skipDoseMutation = useMutation({
@@ -126,7 +153,7 @@ export const useDoseMutations = () => {
       }));
     },
     onError: onErrorRollback,
-    onSettled: onSettledRefetch,
+    onSettled: (_data, _error, doseId) => onSettledRefetch(doseId),
   });
 
   const snoozeDoseMutation = useMutation({
@@ -140,7 +167,7 @@ export const useDoseMutations = () => {
       }));
     },
     onError: onErrorRollback,
-    onSettled: onSettledRefetch,
+    onSettled: (_data, _error, variables) => onSettledRefetch(variables.doseId),
   });
 
   const undoDoseMutation = useMutation({
@@ -152,7 +179,7 @@ export const useDoseMutations = () => {
         taken_at: null,
       })),
     onError: onErrorRollback,
-    onSettled: onSettledRefetch,
+    onSettled: (_data, _error, doseId) => onSettledRefetch(doseId),
   });
 
   return {

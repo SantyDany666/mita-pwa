@@ -1,5 +1,4 @@
 import { Check, X } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
 import { MedicineIconType } from "@/features/reminders/utils/medicine-icons";
 import { MedicineIconDisplay } from "@/features/reminders/components/MedicineIconDisplay";
 
@@ -17,6 +16,7 @@ export interface DoseCardProps {
   onTake?: () => void;
   onSkip?: () => void;
   onSnooze?: () => void;
+  onClick?: () => void;
 }
 
 export function DoseCard({
@@ -33,13 +33,10 @@ export function DoseCard({
   onTake,
   onSkip,
   onSnooze,
+  onClick,
 }: DoseCardProps) {
-  const navigate = useNavigate();
-
   const handleCardClick = () => {
-    if (id) {
-      navigate({ to: "/reminders/$id", params: { id } });
-    }
+    onClick?.();
   };
 
   // Overdue style

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { DoseCard } from "./DoseCard";
 import { DoseSection } from "./DoseSection";
 import {
@@ -68,6 +69,7 @@ export function DailyDoseList({
   selectedDate,
   onSetSnoozeDoseId,
 }: DailyDoseListProps) {
+  const navigate = useNavigate();
   const { doses, isLoading, takeDose, skipDose, undoDose } =
     useDoses(selectedDate);
 
@@ -217,6 +219,7 @@ export function DailyDoseList({
         onTake={() => handleTake(dose)}
         onSkip={() => handleSkip(dose)}
         onSnooze={() => onSetSnoozeDoseId(dose.id)}
+        onClick={() => navigate({ to: "/doses/$doseId", params: { doseId: dose.id } })}
       />
     );
   };

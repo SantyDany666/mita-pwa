@@ -20,6 +20,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RemindersIndexRouteImport } from './routes/reminders/index'
 import { Route as CreateProfileIndexRouteImport } from './routes/create-profile/index'
 import { Route as RemindersCreateRouteImport } from './routes/reminders/create'
+import { Route as DosesDoseIdRouteImport } from './routes/doses/$doseId'
 import { Route as CreateProfileStep3RouteImport } from './routes/create-profile/step-3'
 import { Route as CreateProfileStep2RouteImport } from './routes/create-profile/step-2'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
@@ -82,6 +83,11 @@ const RemindersCreateRoute = RemindersCreateRouteImport.update({
   path: '/create',
   getParentRoute: () => RemindersRouteRoute,
 } as any)
+const DosesDoseIdRoute = DosesDoseIdRouteImport.update({
+  id: '/doses/$doseId',
+  path: '/doses/$doseId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CreateProfileStep3Route = CreateProfileStep3RouteImport.update({
   id: '/step-3',
   path: '/step-3',
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/create-profile/step-2': typeof CreateProfileStep2Route
   '/create-profile/step-3': typeof CreateProfileStep3Route
+  '/doses/$doseId': typeof DosesDoseIdRoute
   '/reminders/create': typeof RemindersCreateRoute
   '/create-profile/': typeof CreateProfileIndexRoute
   '/reminders/': typeof RemindersIndexRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/create-profile/step-2': typeof CreateProfileStep2Route
   '/create-profile/step-3': typeof CreateProfileStep3Route
+  '/doses/$doseId': typeof DosesDoseIdRoute
   '/reminders/create': typeof RemindersCreateRoute
   '/create-profile': typeof CreateProfileIndexRoute
   '/reminders': typeof RemindersIndexRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/create-profile/step-2': typeof CreateProfileStep2Route
   '/create-profile/step-3': typeof CreateProfileStep3Route
+  '/doses/$doseId': typeof DosesDoseIdRoute
   '/reminders/create': typeof RemindersCreateRoute
   '/create-profile/': typeof CreateProfileIndexRoute
   '/reminders/': typeof RemindersIndexRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/create-profile/step-2'
     | '/create-profile/step-3'
+    | '/doses/$doseId'
     | '/reminders/create'
     | '/create-profile/'
     | '/reminders/'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/create-profile/step-2'
     | '/create-profile/step-3'
+    | '/doses/$doseId'
     | '/reminders/create'
     | '/create-profile'
     | '/reminders'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/create-profile/step-2'
     | '/create-profile/step-3'
+    | '/doses/$doseId'
     | '/reminders/create'
     | '/create-profile/'
     | '/reminders/'
@@ -235,6 +247,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   WelcomeRoute: typeof WelcomeRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  DosesDoseIdRoute: typeof DosesDoseIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -315,6 +328,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/reminders/create'
       preLoaderRoute: typeof RemindersCreateRouteImport
       parentRoute: typeof RemindersRouteRoute
+    }
+    '/doses/$doseId': {
+      id: '/doses/$doseId'
+      path: '/doses/$doseId'
+      fullPath: '/doses/$doseId'
+      preLoaderRoute: typeof DosesDoseIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/create-profile/step-3': {
       id: '/create-profile/step-3'
@@ -416,6 +436,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   WelcomeRoute: WelcomeRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  DosesDoseIdRoute: DosesDoseIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -6,6 +6,23 @@ export type DoseEventUpdate = TablesUpdate<"dose_events">;
 
 export const doseService = {
   /**
+   * Get a specific dose event by ID, including its reminder data.
+   */
+  getById: async (
+    doseId: string,
+  ): Promise<DoseEvent & { reminders: Tables<"reminders"> | null }> => {
+    const { data, error } = await supabase
+      .from("dose_events")
+      .select("*, reminders(*)")
+      .eq("id", doseId)
+      .single();
+
+    if (error) throw error;
+    if (!data) throw new Error("Dose not found");
+    return data;
+  },
+
+  /**
    * Get doses for a specific profile and date range
    */
   getByDateRange: async (
