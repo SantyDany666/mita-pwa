@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { doseService } from "@/features/reminders/services/dose.service";
 import { notificationService } from "@/services/notification.service";
 import type { Tables } from "@/types/database.types";
+import { hashString } from "@/utils/scheduler.utils";
 
 export type DoseWithReminder = Tables<"dose_events"> & {
   reminders: Tables<"reminders"> | null;
@@ -90,12 +91,14 @@ export const useDoseMutations = () => {
 
   const takeDoseMutation = useMutation({
     mutationFn: (doseId: string) => doseService.markAsTaken(doseId),
-    onMutate: (doseId) =>
-      performOptimisticUpdate(doseId, (dose) => ({
+    onMutate: (doseId) => {
+      notificationService.cancel(hashString(doseId));
+      return performOptimisticUpdate(doseId, (dose) => ({
         ...dose,
         status: "taken",
         taken_at: new Date().toISOString(),
-      })),
+      }));
+    },
     onError: onErrorRollback,
     onSuccess: (data) => {
       // Data returns the payload from doseService.markAsTaken
@@ -115,11 +118,13 @@ export const useDoseMutations = () => {
 
   const skipDoseMutation = useMutation({
     mutationFn: (doseId: string) => doseService.markAsSkipped(doseId),
-    onMutate: (doseId) =>
-      performOptimisticUpdate(doseId, (dose) => ({
+    onMutate: (doseId) => {
+      notificationService.cancel(hashString(doseId));
+      return performOptimisticUpdate(doseId, (dose) => ({
         ...dose,
         status: "skipped",
-      })),
+      }));
+    },
     onError: onErrorRollback,
     onSettled: onSettledRefetch,
   });
@@ -127,11 +132,13 @@ export const useDoseMutations = () => {
   const snoozeDoseMutation = useMutation({
     mutationFn: ({ doseId, date }: { doseId: string; date: Date }) =>
       doseService.snoozeDose(doseId, date),
-    onMutate: ({ doseId, date }) =>
-      performOptimisticUpdate(doseId, (dose) => ({
+    onMutate: ({ doseId, date }) => {
+      notificationService.cancel(hashString(doseId));
+      return performOptimisticUpdate(doseId, (dose) => ({
         ...dose,
         scheduled_at: date.toISOString(),
-      })),
+      }));
+    },
     onError: onErrorRollback,
     onSettled: onSettledRefetch,
   });
