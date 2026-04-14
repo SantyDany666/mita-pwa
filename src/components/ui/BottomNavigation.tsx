@@ -34,15 +34,23 @@ export function BottomNavigation() {
           </Link>
 
           {/* Tab 2: Resumen */}
-          <a
-            href="#"
-            className="flex flex-col items-center justify-center gap-1 w-[20%] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+          <Link
+            to="/summary"
+            className={`flex flex-col items-center justify-center gap-1 w-[20%] transition-colors ${
+              isActive("/summary")
+                ? "text-[#054A91] dark:text-[#81A4CD]"
+                : "text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            }`}
           >
-            <BarChart2 className="w-6 h-6" />
+            <BarChart2
+              className="w-6 h-6"
+              fill={isActive("/summary") ? "currentColor" : "none"}
+              fillOpacity={isActive("/summary") ? 0.2 : 0}
+            />
             <span className="text-[10px] font-medium leading-none">
               Resumen
             </span>
-          </a>
+          </Link>
 
           {/* Tab 3: FAB CENTRAL (Acción Global) */}
           <div className="w-[20%] flex justify-center items-center relative">

@@ -21,6 +21,19 @@ class MoodService {
       throw error;
     }
   }
+
+  async getByDateRange(profileId: string, start: Date, end: Date) {
+    const { data, error } = await supabase
+      .from("mood_logs")
+      .select("*")
+      .eq("profile_id", profileId)
+      .gte("created_at", start.toISOString())
+      .lte("created_at", end.toISOString())
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return data;
+  }
 }
 
 export const moodService = new MoodService();

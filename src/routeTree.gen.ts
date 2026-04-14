@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as SummaryRouteImport } from './routes/summary'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PendingDosesRouteImport } from './routes/pending-doses'
 import { Route as OtpRouteImport } from './routes/otp'
@@ -33,6 +34,11 @@ import { Route as RemindersIdEditRouteImport } from './routes/reminders/$id/edit
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SummaryRoute = SummaryRouteImport.update({
+  id: '/summary',
+  path: '/summary',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -139,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/otp': typeof OtpRoute
   '/pending-doses': typeof PendingDosesRoute
   '/profile': typeof ProfileRoute
+  '/summary': typeof SummaryRoute
   '/welcome': typeof WelcomeRoute
   '/reminders/$id': typeof RemindersIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
@@ -159,6 +166,7 @@ export interface FileRoutesByTo {
   '/otp': typeof OtpRoute
   '/pending-doses': typeof PendingDosesRoute
   '/profile': typeof ProfileRoute
+  '/summary': typeof SummaryRoute
   '/welcome': typeof WelcomeRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/create-profile/step-2': typeof CreateProfileStep2Route
@@ -181,6 +189,7 @@ export interface FileRoutesById {
   '/otp': typeof OtpRoute
   '/pending-doses': typeof PendingDosesRoute
   '/profile': typeof ProfileRoute
+  '/summary': typeof SummaryRoute
   '/welcome': typeof WelcomeRoute
   '/reminders/$id': typeof RemindersIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
@@ -205,6 +214,7 @@ export interface FileRouteTypes {
     | '/otp'
     | '/pending-doses'
     | '/profile'
+    | '/summary'
     | '/welcome'
     | '/reminders/$id'
     | '/auth/callback'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/otp'
     | '/pending-doses'
     | '/profile'
+    | '/summary'
     | '/welcome'
     | '/auth/callback'
     | '/create-profile/step-2'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/otp'
     | '/pending-doses'
     | '/profile'
+    | '/summary'
     | '/welcome'
     | '/reminders/$id'
     | '/auth/callback'
@@ -269,6 +281,7 @@ export interface RootRouteChildren {
   OtpRoute: typeof OtpRoute
   PendingDosesRoute: typeof PendingDosesRoute
   ProfileRoute: typeof ProfileRoute
+  SummaryRoute: typeof SummaryRoute
   WelcomeRoute: typeof WelcomeRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   DosesDoseIdRoute: typeof DosesDoseIdRoute
@@ -283,6 +296,13 @@ declare module '@tanstack/react-router' {
       path: '/welcome'
       fullPath: '/welcome'
       preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/summary': {
+      id: '/summary'
+      path: '/summary'
+      fullPath: '/summary'
+      preLoaderRoute: typeof SummaryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -474,6 +494,7 @@ const rootRouteChildren: RootRouteChildren = {
   OtpRoute: OtpRoute,
   PendingDosesRoute: PendingDosesRoute,
   ProfileRoute: ProfileRoute,
+  SummaryRoute: SummaryRoute,
   WelcomeRoute: WelcomeRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   DosesDoseIdRoute: DosesDoseIdRoute,
