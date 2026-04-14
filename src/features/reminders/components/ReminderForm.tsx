@@ -23,6 +23,7 @@ import { ReminderFormValues } from "../utils/validation";
 import { useProfileStore } from "@/store/profile.store";
 import { useAuthStore } from "@/store/auth.store";
 import { useReminderMutations } from "../hooks/useReminderMutations";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ReminderFormProps {
   initialValues?: Partial<ReminderFormValues>;
@@ -362,25 +363,18 @@ export function ReminderForm({
 
           {/* Section 3: Indications */}
           <section className="flex flex-col gap-4 bg-white dark:bg-gray-900 p-5 rounded-xl border border-slate-200 dark:border-gray-800 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-            <label className="flex flex-col w-full">
-              <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal pb-2">
-                Indicaciones{" "}
-                <span className="text-gray-400 dark:text-gray-500 font-normal text-sm ml-1">
-                  (Opcional)
-                </span>
-              </p>
-              <Controller
-                control={control}
-                name="indications"
-                render={({ field }) => (
-                  <textarea
-                    {...field}
-                    className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-28 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal transition-all"
-                    placeholder="Ej: Tomar con comida, no conducir..."
-                  />
-                )}
-              />
-            </label>
+            <Controller
+              control={control}
+              name="indications"
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  label="Indicaciones"
+                  optional
+                  placeholder="Ej: Tomar con comida, no conducir..."
+                />
+              )}
+            />
           </section>
         </main>
 

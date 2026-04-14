@@ -82,8 +82,9 @@ export function GlobalActionDrawer({
               </button>
 
               {/* Estado de Ánimo */}
-              <button
-                onClick={handleSoon}
+              <Link
+                to="/mood/log"
+                onClick={() => onOpenChange(false)}
                 className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md hover:bg-pink-50 dark:hover:bg-pink-900/10 hover:border-pink-200 dark:hover:border-pink-800 transition-all group active:scale-[0.98]"
               >
                 <div className="w-12 h-12 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-pink-500 shadow-sm group-hover:scale-110 group-hover:bg-pink-100 dark:group-hover:bg-pink-900/30 transition-all">
@@ -92,7 +93,7 @@ export function GlobalActionDrawer({
                 <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm text-center leading-tight">
                   Estado de Ánimo
                 </span>
-              </button>
+              </Link>
             </div>
           </div>
         </DrawerContent>
