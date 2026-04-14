@@ -8,7 +8,6 @@ import { Zap, Pill, Activity, SmilePlus } from "lucide-react";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { SosDoseDrawer } from "@/features/pending-doses/components/SosDoseDrawer";
-import { toast } from "sonner";
 
 interface GlobalActionDrawerProps {
   open: boolean;
@@ -20,11 +19,6 @@ export function GlobalActionDrawer({
   onOpenChange,
 }: GlobalActionDrawerProps) {
   const [isSosOpen, setIsSosOpen] = useState(false);
-
-  const handleSoon = () => {
-    toast.info("Próximamente disponible");
-    onOpenChange(false);
-  };
 
   return (
     <>
@@ -69,8 +63,9 @@ export function GlobalActionDrawer({
               </Link>
 
               {/* Síntoma */}
-              <button
-                onClick={handleSoon}
+              <Link
+                to="/symptoms/log"
+                onClick={() => onOpenChange(false)}
                 className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md hover:bg-purple-50 dark:hover:bg-purple-900/10 hover:border-purple-200 dark:hover:border-purple-800 transition-all group active:scale-[0.98]"
               >
                 <div className="w-12 h-12 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-purple-500 shadow-sm group-hover:scale-110 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-all">
@@ -79,7 +74,7 @@ export function GlobalActionDrawer({
                 <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm">
                   Síntoma
                 </span>
-              </button>
+              </Link>
 
               {/* Estado de Ánimo */}
               <Link

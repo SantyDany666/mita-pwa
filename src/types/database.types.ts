@@ -7,6 +7,8 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.1"
   }
@@ -195,6 +197,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "reminders_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      symptom_logs: {
+        Row: {
+          created_at: string | null
+          id: string
+          intensity: number
+          note: string | null
+          profile_id: string | null
+          symptom: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          intensity: number
+          note?: string | null
+          profile_id?: string | null
+          symptom: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          intensity?: number
+          note?: string | null
+          profile_id?: string | null
+          symptom?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "symptom_logs_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"

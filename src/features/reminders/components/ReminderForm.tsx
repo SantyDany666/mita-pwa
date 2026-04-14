@@ -24,6 +24,8 @@ import { useProfileStore } from "@/store/profile.store";
 import { useAuthStore } from "@/store/auth.store";
 import { useReminderMutations } from "../hooks/useReminderMutations";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 
 interface ReminderFormProps {
   initialValues?: Partial<ReminderFormValues>;
@@ -127,73 +129,53 @@ export function ReminderForm({
               )}
             />
 
-            <label className="flex flex-col w-full">
-              <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal pb-2">
-                Nombre
-              </p>
-              <Controller
-                control={control}
-                name="name"
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    type="text"
-                    className={`flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border ${errors.name ? "border-red-500" : "border-slate-200 dark:border-gray-700"} bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal transition-all`}
-                    placeholder="Ej: Ibuprofeno"
-                  />
-                )}
-              />
-              {errors.name && (
-                <span className="text-red-500 text-xs mt-1">
-                  {errors.name.message}
-                </span>
+            <Controller
+              control={control}
+              name="name"
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  label="Nombre"
+                  placeholder="Ej: Ibuprofeno"
+                  error={errors.name?.message}
+                />
               )}
-            </label>
+            />
 
             <div className="flex w-full gap-4">
-              <label className="flex flex-col min-w-0 flex-1">
-                <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal pb-2">
-                  Dosis
-                </p>
+              <div className="flex-1">
                 <Controller
                   control={control}
                   name="dose"
                   render={({ field }) => (
-                    <input
+                    <Input
                       {...field}
-                      type="text"
-                      className={`flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border ${errors.dose ? "border-red-500" : "border-slate-200 dark:border-gray-700"} bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal transition-all`}
+                      label="Dosis"
                       placeholder="500"
+                      error={errors.dose?.message}
                     />
                   )}
                 />
-              </label>
-              <label className="flex flex-col min-w-0 flex-1">
-                <p className="text-slate-900 dark:text-gray-200 text-base font-medium leading-normal pb-2">
-                  Unidad
-                </p>
-                <div className="relative">
-                  <Controller
-                    control={control}
-                    name="unit"
-                    render={({ field }) => (
-                      <select
-                        {...field}
-                        className="appearance-none w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#054A91]/20 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 focus:border-[#054A91] h-14 p-[15px] text-base font-normal leading-normal transition-all pr-10"
-                      >
-                        {availableUnits.map((unit) => (
-                          <option key={unit.value} value={unit.value}>
-                            {unit.label}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                  />
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#00B8A5]">
-                    <ChevronRight className="rotate-90 w-5 h-5" />
-                  </div>
-                </div>
-              </label>
+              </div>
+              <div className="flex-1">
+                <Controller
+                  control={control}
+                  name="unit"
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label="Unidad"
+                      error={errors.unit?.message}
+                    >
+                      {availableUnits.map((unit) => (
+                        <option key={unit.value} value={unit.value}>
+                          {unit.label}
+                        </option>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </div>
             </div>
           </section>
 
