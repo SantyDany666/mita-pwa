@@ -1,8 +1,8 @@
 import { ReactNode, useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { MoreVertical, Calendar, BarChart2, Bot, User } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { MoreVertical } from "lucide-react";
 import { AppHeader } from "@/components/ui/AppHeader";
-import { FabSpeedDial } from "@/features/reminders/components/FabSpeedDial";
+import { BottomNavigation } from "@/components/ui/BottomNavigation";
 
 interface PendingDosesLayoutProps {
   children: ReactNode;
@@ -70,51 +70,7 @@ export function PendingDosesLayout({
         <div className="flex-1 pb-32 w-full">{children}</div>
       </div>
 
-      {/* Floating Action Button */}
-      <FabSpeedDial />
-
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 pb-[max(0.5rem,env(safe-area-inset-bottom))] z-40 flex justify-center left-0 right-0">
-        <div className="flex items-center justify-around h-16 w-full max-w-md">
-          <Link
-            to="/pending-doses"
-            search={{ view: "today" }}
-            className="flex flex-col items-center justify-center gap-1 min-w-[64px] text-[#054A91] dark:text-[#81A4CD]"
-          >
-            <Calendar
-              className="w-6 h-6"
-              fill="currentColor"
-              fillOpacity={0.2}
-            />
-            <span className="text-[10px] font-medium leading-none">Hoy</span>
-          </Link>
-          <a
-            href="#"
-            className="flex flex-col items-center justify-center gap-1 min-w-[64px] text-[#81A4CD] hover:text-[#054A91] dark:hover:text-white transition-colors"
-          >
-            <BarChart2 className="w-6 h-6" />
-            <span className="text-[10px] font-medium leading-none">
-              Resumen
-            </span>
-          </a>
-          <a
-            href="#"
-            className="flex flex-col items-center justify-center gap-1 min-w-[64px] text-[#81A4CD] hover:text-[#054A91] dark:hover:text-white transition-colors"
-          >
-            <Bot className="w-6 h-6" />
-            <span className="text-[10px] font-medium leading-none">
-              Chatbot
-            </span>
-          </a>
-          <Link
-            to="/profile"
-            className="flex flex-col items-center justify-center gap-1 min-w-[64px] text-[#81A4CD] hover:text-[#054A91] dark:hover:text-white transition-colors"
-          >
-            <User className="w-6 h-6" />
-            <span className="text-[10px] font-medium leading-none">Perfil</span>
-          </Link>
-        </div>
-      </div>
+      <BottomNavigation />
     </div>
   );
 }
