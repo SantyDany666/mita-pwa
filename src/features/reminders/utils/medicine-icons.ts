@@ -7,6 +7,7 @@ import {
   SprayCan,
   Cylinder,
   CircleHelp,
+  Package,
 } from "lucide-react";
 
 export type MedicineIconType =
@@ -32,6 +33,7 @@ export const MEDICINE_ICONS: {
   { id: "drops", label: "Gotas", icon: Droplet },
   { id: "inhaler", label: "Inhalador", icon: SprayCan },
   { id: "cream", label: "Crema", icon: Cylinder },
+  { id: "powder", label: "Polvo", icon: Package },
   { id: "other", label: "Otro", icon: CircleHelp },
 ];
 
