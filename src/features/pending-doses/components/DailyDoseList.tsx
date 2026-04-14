@@ -207,7 +207,6 @@ export function DailyDoseList({
     return (
       <DoseCard
         key={dose.id}
-        id={dose.reminder_id}
         time={safeFormat(dose.scheduled_at) || "--:--"}
         medicine={dose.reminders?.medicine_name || "Medicamento desconocido"}
         status={dose.status as "pending" | "taken" | "skipped"}
@@ -219,7 +218,9 @@ export function DailyDoseList({
         onTake={() => handleTake(dose)}
         onSkip={() => handleSkip(dose)}
         onSnooze={() => onSetSnoozeDoseId(dose.id)}
-        onClick={() => navigate({ to: "/doses/$doseId", params: { doseId: dose.id } })}
+        onClick={() =>
+          navigate({ to: "/doses/$doseId", params: { doseId: dose.id } })
+        }
       />
     );
   };

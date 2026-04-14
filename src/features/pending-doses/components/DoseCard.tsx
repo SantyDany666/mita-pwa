@@ -3,7 +3,6 @@ import { MedicineIconType } from "@/features/reminders/utils/medicine-icons";
 import { MedicineIconDisplay } from "@/features/reminders/components/MedicineIconDisplay";
 
 export interface DoseCardProps {
-  id?: string;
   time: string;
   medicine: string;
   status: "pending" | "taken" | "skipped" | "postponed";
@@ -20,7 +19,6 @@ export interface DoseCardProps {
 }
 
 export function DoseCard({
-  id,
   time,
   medicine,
   status,
