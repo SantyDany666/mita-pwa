@@ -7,6 +7,11 @@ export interface CreateMoodLogParams {
   note?: string;
 }
 
+export interface UpdateMoodLogParams {
+  moodValue: number;
+  note?: string;
+}
+
 class MoodService {
   async createMoodLog({ userId, profileId, moodValue, note }: CreateMoodLogParams): Promise<void> {
     const { error } = await supabase.from("mood_logs").insert({
@@ -20,6 +25,38 @@ class MoodService {
       console.error("Error inserting mood log:", error);
       throw error;
     }
+  }
+
+  async getById(id: string) {
+    const { data, error } = await supabase
+      .from("mood_logs")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  async update(id: string, params: UpdateMoodLogParams): Promise<void> {
+    const { error } = await supabase
+      .from("mood_logs")
+      .update({
+        mood_value: params.moodValue,
+        note: params.note || null,
+      })
+      .eq("id", id);
+
+    if (error) throw error;
+  }
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase
+      .from("mood_logs")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
   }
 
   async getByDateRange(profileId: string, start: Date, end: Date) {

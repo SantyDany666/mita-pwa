@@ -21,15 +21,19 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RemindersIndexRouteImport } from './routes/reminders/index'
 import { Route as CreateProfileIndexRouteImport } from './routes/create-profile/index'
 import { Route as SymptomsLogRouteImport } from './routes/symptoms/log'
+import { Route as SymptomsSymptomIdRouteImport } from './routes/symptoms/$symptomId'
 import { Route as RemindersCreateRouteImport } from './routes/reminders/create'
 import { Route as MoodLogRouteImport } from './routes/mood/log'
+import { Route as MoodMoodIdRouteImport } from './routes/mood/$moodId'
 import { Route as DosesDoseIdRouteImport } from './routes/doses/$doseId'
 import { Route as CreateProfileStep3RouteImport } from './routes/create-profile/step-3'
 import { Route as CreateProfileStep2RouteImport } from './routes/create-profile/step-2'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as RemindersIdRouteRouteImport } from './routes/reminders/$id/route'
 import { Route as RemindersIdIndexRouteImport } from './routes/reminders/$id/index'
+import { Route as SymptomsSymptomIdEditRouteImport } from './routes/symptoms/$symptomId_.edit'
 import { Route as RemindersIdEditRouteImport } from './routes/reminders/$id/edit'
+import { Route as MoodMoodIdEditRouteImport } from './routes/mood/$moodId_.edit'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
@@ -91,6 +95,11 @@ const SymptomsLogRoute = SymptomsLogRouteImport.update({
   path: '/symptoms/log',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SymptomsSymptomIdRoute = SymptomsSymptomIdRouteImport.update({
+  id: '/symptoms/$symptomId',
+  path: '/symptoms/$symptomId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RemindersCreateRoute = RemindersCreateRouteImport.update({
   id: '/create',
   path: '/create',
@@ -99,6 +108,11 @@ const RemindersCreateRoute = RemindersCreateRouteImport.update({
 const MoodLogRoute = MoodLogRouteImport.update({
   id: '/mood/log',
   path: '/mood/log',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoodMoodIdRoute = MoodMoodIdRouteImport.update({
+  id: '/mood/$moodId',
+  path: '/mood/$moodId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DosesDoseIdRoute = DosesDoseIdRouteImport.update({
@@ -131,10 +145,20 @@ const RemindersIdIndexRoute = RemindersIdIndexRouteImport.update({
   path: '/',
   getParentRoute: () => RemindersIdRouteRoute,
 } as any)
+const SymptomsSymptomIdEditRoute = SymptomsSymptomIdEditRouteImport.update({
+  id: '/symptoms/$symptomId_/edit',
+  path: '/symptoms/$symptomId/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RemindersIdEditRoute = RemindersIdEditRouteImport.update({
   id: '/edit',
   path: '/edit',
   getParentRoute: () => RemindersIdRouteRoute,
+} as any)
+const MoodMoodIdEditRoute = MoodMoodIdEditRouteImport.update({
+  id: '/mood/$moodId_/edit',
+  path: '/mood/$moodId/edit',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -152,12 +176,16 @@ export interface FileRoutesByFullPath {
   '/create-profile/step-2': typeof CreateProfileStep2Route
   '/create-profile/step-3': typeof CreateProfileStep3Route
   '/doses/$doseId': typeof DosesDoseIdRoute
+  '/mood/$moodId': typeof MoodMoodIdRoute
   '/mood/log': typeof MoodLogRoute
   '/reminders/create': typeof RemindersCreateRoute
+  '/symptoms/$symptomId': typeof SymptomsSymptomIdRoute
   '/symptoms/log': typeof SymptomsLogRoute
   '/create-profile/': typeof CreateProfileIndexRoute
   '/reminders/': typeof RemindersIndexRoute
+  '/mood/$moodId/edit': typeof MoodMoodIdEditRoute
   '/reminders/$id/edit': typeof RemindersIdEditRoute
+  '/symptoms/$symptomId/edit': typeof SymptomsSymptomIdEditRoute
   '/reminders/$id/': typeof RemindersIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -172,12 +200,16 @@ export interface FileRoutesByTo {
   '/create-profile/step-2': typeof CreateProfileStep2Route
   '/create-profile/step-3': typeof CreateProfileStep3Route
   '/doses/$doseId': typeof DosesDoseIdRoute
+  '/mood/$moodId': typeof MoodMoodIdRoute
   '/mood/log': typeof MoodLogRoute
   '/reminders/create': typeof RemindersCreateRoute
+  '/symptoms/$symptomId': typeof SymptomsSymptomIdRoute
   '/symptoms/log': typeof SymptomsLogRoute
   '/create-profile': typeof CreateProfileIndexRoute
   '/reminders': typeof RemindersIndexRoute
+  '/mood/$moodId/edit': typeof MoodMoodIdEditRoute
   '/reminders/$id/edit': typeof RemindersIdEditRoute
+  '/symptoms/$symptomId/edit': typeof SymptomsSymptomIdEditRoute
   '/reminders/$id': typeof RemindersIdIndexRoute
 }
 export interface FileRoutesById {
@@ -196,12 +228,16 @@ export interface FileRoutesById {
   '/create-profile/step-2': typeof CreateProfileStep2Route
   '/create-profile/step-3': typeof CreateProfileStep3Route
   '/doses/$doseId': typeof DosesDoseIdRoute
+  '/mood/$moodId': typeof MoodMoodIdRoute
   '/mood/log': typeof MoodLogRoute
   '/reminders/create': typeof RemindersCreateRoute
+  '/symptoms/$symptomId': typeof SymptomsSymptomIdRoute
   '/symptoms/log': typeof SymptomsLogRoute
   '/create-profile/': typeof CreateProfileIndexRoute
   '/reminders/': typeof RemindersIndexRoute
+  '/mood/$moodId_/edit': typeof MoodMoodIdEditRoute
   '/reminders/$id/edit': typeof RemindersIdEditRoute
+  '/symptoms/$symptomId_/edit': typeof SymptomsSymptomIdEditRoute
   '/reminders/$id/': typeof RemindersIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -221,12 +257,16 @@ export interface FileRouteTypes {
     | '/create-profile/step-2'
     | '/create-profile/step-3'
     | '/doses/$doseId'
+    | '/mood/$moodId'
     | '/mood/log'
     | '/reminders/create'
+    | '/symptoms/$symptomId'
     | '/symptoms/log'
     | '/create-profile/'
     | '/reminders/'
+    | '/mood/$moodId/edit'
     | '/reminders/$id/edit'
+    | '/symptoms/$symptomId/edit'
     | '/reminders/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -241,12 +281,16 @@ export interface FileRouteTypes {
     | '/create-profile/step-2'
     | '/create-profile/step-3'
     | '/doses/$doseId'
+    | '/mood/$moodId'
     | '/mood/log'
     | '/reminders/create'
+    | '/symptoms/$symptomId'
     | '/symptoms/log'
     | '/create-profile'
     | '/reminders'
+    | '/mood/$moodId/edit'
     | '/reminders/$id/edit'
+    | '/symptoms/$symptomId/edit'
     | '/reminders/$id'
   id:
     | '__root__'
@@ -264,12 +308,16 @@ export interface FileRouteTypes {
     | '/create-profile/step-2'
     | '/create-profile/step-3'
     | '/doses/$doseId'
+    | '/mood/$moodId'
     | '/mood/log'
     | '/reminders/create'
+    | '/symptoms/$symptomId'
     | '/symptoms/log'
     | '/create-profile/'
     | '/reminders/'
+    | '/mood/$moodId_/edit'
     | '/reminders/$id/edit'
+    | '/symptoms/$symptomId_/edit'
     | '/reminders/$id/'
   fileRoutesById: FileRoutesById
 }
@@ -285,8 +333,12 @@ export interface RootRouteChildren {
   WelcomeRoute: typeof WelcomeRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   DosesDoseIdRoute: typeof DosesDoseIdRoute
+  MoodMoodIdRoute: typeof MoodMoodIdRoute
   MoodLogRoute: typeof MoodLogRoute
+  SymptomsSymptomIdRoute: typeof SymptomsSymptomIdRoute
   SymptomsLogRoute: typeof SymptomsLogRoute
+  MoodMoodIdEditRoute: typeof MoodMoodIdEditRoute
+  SymptomsSymptomIdEditRoute: typeof SymptomsSymptomIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -375,6 +427,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SymptomsLogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/symptoms/$symptomId': {
+      id: '/symptoms/$symptomId'
+      path: '/symptoms/$symptomId'
+      fullPath: '/symptoms/$symptomId'
+      preLoaderRoute: typeof SymptomsSymptomIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reminders/create': {
       id: '/reminders/create'
       path: '/create'
@@ -387,6 +446,13 @@ declare module '@tanstack/react-router' {
       path: '/mood/log'
       fullPath: '/mood/log'
       preLoaderRoute: typeof MoodLogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mood/$moodId': {
+      id: '/mood/$moodId'
+      path: '/mood/$moodId'
+      fullPath: '/mood/$moodId'
+      preLoaderRoute: typeof MoodMoodIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/doses/$doseId': {
@@ -431,12 +497,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RemindersIdIndexRouteImport
       parentRoute: typeof RemindersIdRouteRoute
     }
+    '/symptoms/$symptomId_/edit': {
+      id: '/symptoms/$symptomId_/edit'
+      path: '/symptoms/$symptomId/edit'
+      fullPath: '/symptoms/$symptomId/edit'
+      preLoaderRoute: typeof SymptomsSymptomIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reminders/$id/edit': {
       id: '/reminders/$id/edit'
       path: '/edit'
       fullPath: '/reminders/$id/edit'
       preLoaderRoute: typeof RemindersIdEditRouteImport
       parentRoute: typeof RemindersIdRouteRoute
+    }
+    '/mood/$moodId_/edit': {
+      id: '/mood/$moodId_/edit'
+      path: '/mood/$moodId/edit'
+      fullPath: '/mood/$moodId/edit'
+      preLoaderRoute: typeof MoodMoodIdEditRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -498,8 +578,12 @@ const rootRouteChildren: RootRouteChildren = {
   WelcomeRoute: WelcomeRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   DosesDoseIdRoute: DosesDoseIdRoute,
+  MoodMoodIdRoute: MoodMoodIdRoute,
   MoodLogRoute: MoodLogRoute,
+  SymptomsSymptomIdRoute: SymptomsSymptomIdRoute,
   SymptomsLogRoute: SymptomsLogRoute,
+  MoodMoodIdEditRoute: MoodMoodIdEditRoute,
+  SymptomsSymptomIdEditRoute: SymptomsSymptomIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

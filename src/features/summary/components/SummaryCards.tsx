@@ -4,12 +4,14 @@ import { Tables } from "@/types/database.types";
 import { MedicineIconDisplay } from "@/features/reminders/components/MedicineIconDisplay";
 import { MedicineIconType } from "@/features/reminders/utils/medicine-icons";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "@tanstack/react-router";
 
 export interface DoseRecordCardProps {
   dose: Tables<"dose_events"> & { reminders: Tables<"reminders"> | null };
 }
 
 export function DoseRecordCard({ dose }: DoseRecordCardProps) {
+  const navigate = useNavigate();
   const status = dose.status as "taken" | "skipped";
   const time = format(new Date(dose.scheduled_at), "HH:mm");
   const takenTime = dose.taken_at
@@ -19,7 +21,10 @@ export function DoseRecordCard({ dose }: DoseRecordCardProps) {
   const icon = (dose.reminders?.medicine_icon as MedicineIconType) || "capsule";
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-md h-24">
+    <button
+      onClick={() => navigate({ to: "/doses/$doseId", params: { doseId: dose.id } })}
+      className="w-full text-left flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-md active:scale-[0.98] h-24"
+    >
       <div className="flex shrink-0 items-center justify-center w-14 h-14 rounded-2xl bg-blue-100/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
         <MedicineIconDisplay type={icon} className="w-8 h-8" />
       </div>
@@ -49,7 +54,7 @@ export function DoseRecordCard({ dose }: DoseRecordCardProps) {
           {medicineName}
         </p>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -58,6 +63,7 @@ export function SymptomRecordCard({
 }: {
   symptom: Tables<"symptom_logs">;
 }) {
+  const navigate = useNavigate();
   const time = format(new Date(symptom.created_at!), "HH:mm");
 
   const intensityData = [
@@ -83,7 +89,10 @@ export function SymptomRecordCard({
     intensityData[0];
 
   return (
-    <div className="flex items-start gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-md min-h-[100px]">
+    <button
+      onClick={() => navigate({ to: "/symptoms/$symptomId", params: { symptomId: symptom.id } })}
+      className="w-full text-left flex items-start gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-md active:scale-[0.98] min-h-[100px]"
+    >
       <div className="flex shrink-0 items-center justify-center w-14 h-14 rounded-2xl bg-orange-100/50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
         <Thermometer className="w-8 h-8" />
       </div>
@@ -119,11 +128,12 @@ export function SymptomRecordCard({
           </p>
         )}
       </div>
-    </div>
+    </button>
   );
 }
 
 export function MoodRecordCard({ mood }: { mood: Tables<"mood_logs"> }) {
+  const navigate = useNavigate();
   const time = format(new Date(mood.created_at!), "HH:mm");
 
   const moodData = [
@@ -168,7 +178,10 @@ export function MoodRecordCard({ mood }: { mood: Tables<"mood_logs"> }) {
     moodData.find((m) => m.value === mood.mood_value) || moodData[2];
 
   return (
-    <div className="flex items-start gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-md min-h-[100px]">
+    <button
+      onClick={() => navigate({ to: "/mood/$moodId", params: { moodId: mood.id } })}
+      className="w-full text-left flex items-start gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-md active:scale-[0.98] min-h-[100px]"
+    >
       <div className="flex shrink-0 items-center justify-center w-14 h-14 rounded-2xl bg-purple-100/50 dark:bg-purple-900/30 text-3xl">
         {currentMood.emoji}
       </div>
@@ -193,6 +206,6 @@ export function MoodRecordCard({ mood }: { mood: Tables<"mood_logs"> }) {
           </p>
         )}
       </div>
-    </div>
+    </button>
   );
 }

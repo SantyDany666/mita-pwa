@@ -8,6 +8,12 @@ export interface CreateSymptomLogParams {
   note?: string;
 }
 
+export interface UpdateSymptomLogParams {
+  symptom: string;
+  intensity: number;
+  note?: string;
+}
+
 class SymptomService {
   async createSymptomLog({
     userId,
@@ -28,6 +34,39 @@ class SymptomService {
       console.error("Error inserting symptom log:", error);
       throw error;
     }
+  }
+
+  async getById(id: string) {
+    const { data, error } = await supabase
+      .from("symptom_logs")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  async update(id: string, params: UpdateSymptomLogParams): Promise<void> {
+    const { error } = await supabase
+      .from("symptom_logs")
+      .update({
+        symptom: params.symptom,
+        intensity: params.intensity,
+        note: params.note || null,
+      })
+      .eq("id", id);
+
+    if (error) throw error;
+  }
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase
+      .from("symptom_logs")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
   }
 
   async getByDateRange(profileId: string, start: Date, end: Date) {

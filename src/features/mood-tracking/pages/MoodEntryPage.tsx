@@ -7,16 +7,29 @@ import { toast } from "sonner";
 import { moodEntrySchema, MoodEntryValues } from "../utils/validation";
 import { MoodSelector } from "../components/MoodSelector";
 import { Textarea } from "@/components/ui/textarea";
-
 import { useAuthStore } from "@/store/auth.store";
 import { useProfileStore } from "@/store/profile.store";
 import { useMoodMutations } from "../hooks/useMoodMutations";
+import { useMoodActions } from "../hooks/useMoodActions";
 
-export function MoodEntryPage() {
+interface MoodEntryPageProps {
+  mode?: "create" | "edit";
+  moodId?: string;
+  initialValues?: Partial<MoodEntryValues>;
+}
+
+export function MoodEntryPage({
+  mode = "create",
+  moodId = "",
+  initialValues,
+}: MoodEntryPageProps) {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { currentProfile } = useProfileStore();
   const { logMood } = useMoodMutations();
+  const { updateMood, isUpdating } = useMoodActions(moodId);
+
+  const isEditMode = mode === "edit";
 
   const {
     control,
@@ -25,29 +38,35 @@ export function MoodEntryPage() {
   } = useForm<MoodEntryValues>({
     resolver: zodResolver(moodEntrySchema),
     defaultValues: {
-      mood: 0,
-      note: "",
+      mood: initialValues?.mood ?? 0,
+      note: initialValues?.note ?? "",
     },
   });
 
+  const isSaving = isSubmitting || isUpdating;
+
   const onSubmit = async (data: MoodEntryValues) => {
-    if (!user || !currentProfile) {
-      toast.error("Error: Perfil no encontrado");
-      return;
-    }
-
     try {
-      await logMood({
-        userId: user.id,
-        profileId: currentProfile.id,
-        moodValue: data.mood,
-        note: data.note,
-      });
-
-      toast.success("Estado de ánimo registrado correctamente");
-      navigate({ to: "/pending-doses", search: { view: "today" } });
+      if (isEditMode) {
+        await updateMood({ moodValue: data.mood, note: data.note });
+        toast.success("Estado de ánimo actualizado correctamente");
+        navigate({ to: "/mood/$moodId", params: { moodId } });
+      } else {
+        if (!user || !currentProfile) {
+          toast.error("Error: Perfil no encontrado");
+          return;
+        }
+        await logMood({
+          userId: user.id,
+          profileId: currentProfile.id,
+          moodValue: data.mood,
+          note: data.note,
+        });
+        toast.success("Estado de ánimo registrado correctamente");
+        navigate({ to: "/pending-doses", search: { view: "today" } });
+      }
     } catch (error) {
-      toast.error("Ocurrió un error al guardar tu estado de ánimo.");
+      toast.error(isEditMode ? "Error al actualizar el estado de ánimo." : "Ocurrió un error al guardar tu estado de ánimo.");
       console.error(error);
     }
   };
@@ -55,7 +74,7 @@ export function MoodEntryPage() {
   return (
     <div className="min-h-screen bg-[#F7F9FC] dark:bg-gray-950 flex flex-col font-sans">
       <AppHeader
-        title="¿Cómo te sientes hoy?"
+        title={isEditMode ? "Editar Estado de Ánimo" : "¿Cómo te sientes hoy?"}
         className="border-none shadow-none bg-[#F7F9FC] dark:bg-gray-950 pt-[max(1rem,env(safe-area-inset-top))] pb-2"
         titleClassName="text-[#054A91] dark:text-white"
         onBack={() => window.history.back()}
@@ -63,12 +82,13 @@ export function MoodEntryPage() {
 
       <main className="flex-1 overflow-y-auto px-4 pt-4 pb-32">
         <div className="max-w-md mx-auto space-y-10">
-          {/* Hero Section */}
-          <div className="text-center space-y-2">
-            <p className="text-gray-500 dark:text-gray-400 text-base italic px-6">
-              "Tu salud mental es igual de importante que tu medicación."
-            </p>
-          </div>
+          {!isEditMode && (
+            <div className="text-center space-y-2">
+              <p className="text-gray-500 dark:text-gray-400 text-base italic px-6">
+                "Tu salud mental es igual de importante que tu medicación."
+              </p>
+            </div>
+          )}
 
           {/* Mood Selector Section */}
           <section className="bg-white dark:bg-gray-900 p-5 rounded-xl border border-slate-200 dark:border-gray-800 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
@@ -114,10 +134,10 @@ export function MoodEntryPage() {
         <div className="w-full max-w-md pointer-events-auto">
           <Button
             onClick={handleSubmit(onSubmit)}
-            disabled={isSubmitting}
+            disabled={isSaving}
             className="w-full h-14 bg-[#054A91] hover:bg-[#043c75] text-white rounded-2xl text-lg font-bold shadow-xl shadow-[#054A91]/20 transform active:scale-[0.98] transition-all disabled:opacity-70 disabled:scale-100"
           >
-            {isSubmitting ? "Guardando..." : "Guardar"}
+            {isSaving ? "Guardando..." : isEditMode ? "Guardar Cambios" : "Guardar"}
           </Button>
         </div>
       </div>

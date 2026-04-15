@@ -9,14 +9,29 @@ import { SymptomSelector } from "../components/SymptomSelector";
 import { IntensitySelector } from "../components/IntensitySelector";
 import { Textarea } from "@/components/ui/textarea";
 import { useSymptomMutations } from "../hooks/useSymptomMutations";
+import { useSymptomActions } from "../hooks/useSymptomActions";
 import { useAuthStore } from "@/store/auth.store";
 import { useProfileStore } from "@/store/profile.store";
 
-export function SymptomEntryPage() {
+interface SymptomEntryPageProps {
+  mode?: "create" | "edit";
+  symptomId?: string;
+  initialValues?: Partial<SymptomEntryValues>;
+}
+
+export function SymptomEntryPage({
+  mode = "create",
+  symptomId = "",
+  initialValues,
+}: SymptomEntryPageProps) {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { currentProfile } = useProfileStore();
   const { logSymptom, isLogging } = useSymptomMutations();
+  const { updateSymptom, isUpdating } = useSymptomActions(symptomId);
+
+  const isEditMode = mode === "edit";
+  const isSaving = isLogging || isUpdating;
 
   const {
     control,
@@ -25,38 +40,46 @@ export function SymptomEntryPage() {
   } = useForm<SymptomEntryValues>({
     resolver: zodResolver(symptomEntrySchema),
     defaultValues: {
-      symptom: "",
-      intensity: 0,
-      note: "",
+      symptom: initialValues?.symptom ?? "",
+      intensity: initialValues?.intensity ?? 0,
+      note: initialValues?.note ?? "",
     },
   });
 
   const onSubmit = async (data: SymptomEntryValues) => {
-    if (!user || !currentProfile) {
-      toast.error("Error: No hay sesión activa o perfil seleccionado");
-      return;
-    }
-
     try {
-      await logSymptom({
-        userId: user.id,
-        profileId: currentProfile.id,
-        symptom: data.symptom,
-        intensity: data.intensity,
-        note: data.note,
-      });
-
-      toast.success("Síntoma registrado correctamente");
-      navigate({ to: "/pending-doses", search: { view: "today" } });
+      if (isEditMode) {
+        await updateSymptom({
+          symptom: data.symptom,
+          intensity: data.intensity,
+          note: data.note,
+        });
+        toast.success("Síntoma actualizado correctamente");
+        navigate({ to: "/symptoms/$symptomId", params: { symptomId } });
+      } else {
+        if (!user || !currentProfile) {
+          toast.error("Error: No hay sesión activa o perfil seleccionado");
+          return;
+        }
+        await logSymptom({
+          userId: user.id,
+          profileId: currentProfile.id,
+          symptom: data.symptom,
+          intensity: data.intensity,
+          note: data.note,
+        });
+        toast.success("Síntoma registrado correctamente");
+        navigate({ to: "/pending-doses", search: { view: "today" } });
+      }
     } catch {
-      toast.error("Hubo un error al registrar el síntoma");
+      toast.error(isEditMode ? "Error al actualizar el síntoma" : "Hubo un error al registrar el síntoma");
     }
   };
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] dark:bg-gray-950 flex flex-col font-sans">
       <AppHeader
-        title="Registrar Síntoma"
+        title={isEditMode ? "Editar Síntoma" : "Registrar Síntoma"}
         className="border-none shadow-none bg-[#F7F9FC] dark:bg-gray-950 pt-[max(1rem,env(safe-area-inset-top))] pb-2"
         titleClassName="text-[#054A91] dark:text-white"
         onBack={() => window.history.back()}
@@ -64,13 +87,14 @@ export function SymptomEntryPage() {
 
       <main className="flex-1 overflow-y-auto px-4 py-4 pb-32">
         <div className="max-w-md mx-auto space-y-6">
-          {/* Hero Section */}
-          <div className="text-center space-y-2">
-            <p className="text-gray-500 dark:text-gray-400 text-sm italic px-6">
-              "Registrar tus síntomas nos ayuda a entender mejor tu evolución
-              diaria."
-            </p>
-          </div>
+          {!isEditMode && (
+            <div className="text-center space-y-2">
+              <p className="text-gray-500 dark:text-gray-400 text-sm italic px-6">
+                "Registrar tus síntomas nos ayuda a entender mejor tu evolución
+                diaria."
+              </p>
+            </div>
+          )}
 
           {/* Symptom Selector Card */}
           <section className="bg-white dark:bg-gray-900 p-5 rounded-xl border border-slate-200 dark:border-gray-800 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-4">
@@ -126,10 +150,10 @@ export function SymptomEntryPage() {
         <div className="w-full max-w-md pointer-events-auto">
           <Button
             onClick={handleSubmit(onSubmit)}
-            disabled={isLogging}
+            disabled={isSaving}
             className="w-full h-14 bg-[#054A91] hover:bg-[#043c75] text-white rounded-2xl text-lg font-bold shadow-xl shadow-[#054A91]/20 transform active:scale-[0.98] transition-all disabled:opacity-70 disabled:scale-100"
           >
-            {isLogging ? "Guardando..." : "Guardar"}
+            {isSaving ? "Guardando..." : isEditMode ? "Guardar Cambios" : "Guardar"}
           </Button>
         </div>
       </div>
