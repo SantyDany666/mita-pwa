@@ -64,24 +64,30 @@ export const useNotificationScheduler = () => {
           await notificationService.cancelBatch(idsToCancel);
         }
 
-        // D. Schedule New Notifications (7 Day Window)
+        // D. Schedule New Notifications (Safe Limit: 45)
         const now = new Date();
-        const scheduleLimit = addDays(now, 7);
+        const MAX_NOTIFICATIONS = 45;
+        const currentCount = scheduledIds.size;
+        const remainingSlots = MAX_NOTIFICATIONS - currentCount;
 
-        const dosesToSchedule = pendingDoses.filter((dose) => {
-          const doseDate = parseISO(dose.scheduled_at);
-          const nId = hashString(dose.id);
+        if (remainingSlots <= 0) return;
 
-          // Conditions:
-          // 1. Not already scheduled
-          // 2. In the future (allow small buffer for "now")
-          // 3. Within 7 days limit
-          return (
-            !scheduledIds.has(nId) &&
-            isAfter(doseDate, now) &&
-            !isAfter(doseDate, scheduleLimit)
-          );
-        });
+        const dosesToSchedule = pendingDoses
+          .filter((dose) => {
+            const doseDate = parseISO(dose.scheduled_at);
+            const nId = hashString(dose.id);
+
+            // Conditions:
+            // 1. Not already scheduled
+            // 2. In the future
+            return !scheduledIds.has(nId) && isAfter(doseDate, now);
+          })
+          .sort(
+            (a, b) =>
+              parseISO(a.scheduled_at).getTime() -
+              parseISO(b.scheduled_at).getTime(),
+          )
+          .slice(0, remainingSlots);
 
         if (dosesToSchedule.length > 0) {
           for (const dose of dosesToSchedule) {

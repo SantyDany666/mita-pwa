@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { Capacitor } from "@capacitor/core";
 import { SocialLogin } from "@capgo/capacitor-social-login";
+import { notificationService } from "@/services/notification.service";
 
 export const authService = {
   /**
@@ -54,6 +55,12 @@ export const authService = {
    * Signs out the current user.
    */
   signOut: async () => {
+    try {
+      // Cancel all pending notifications for this user
+      await notificationService.cancelAllPending();
+    } catch (e) {
+      console.error("Failed to cleanup notifications on signout:", e);
+    }
     const { error } = await supabase.auth.signOut();
     if (error) {
       throw error;

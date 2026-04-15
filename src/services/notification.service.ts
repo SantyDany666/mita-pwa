@@ -175,9 +175,28 @@ export class NotificationService {
     if (ids.length === 0) return;
     try {
       const notifications = ids.map((id) => ({ id }));
-      await LocalNotifications.cancel({ notifications });
+      // Batch in groups of 50 to avoid OS limits on some platforms
+      for (let i = 0; i < notifications.length; i += 50) {
+        const batch = notifications.slice(i, i + 50);
+        await LocalNotifications.cancel({ notifications: batch });
+      }
     } catch (error) {
       console.error(`Failed to cancel batch notifications:`, error);
+    }
+  }
+
+  /**
+   * Cancels all currently pending notifications.
+   * Useful during logout or total reset.
+   */
+  async cancelAllPending(): Promise<void> {
+    try {
+      const { notifications } = await this.getPending();
+      if (notifications.length > 0) {
+        await this.cancelBatch(notifications.map((n) => n.id));
+      }
+    } catch (error) {
+      console.error("Failed to cancel all pending notifications:", error);
     }
   }
 

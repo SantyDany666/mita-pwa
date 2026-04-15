@@ -22,6 +22,7 @@ export const useDoseMutations = () => {
     // 1. Cancel outgoing refetches
     await queryClient.cancelQueries({ queryKey: ["doses"] });
     await queryClient.cancelQueries({ queryKey: ["scheduler-pending-doses"] });
+    await queryClient.cancelQueries({ queryKey: ["summary"] });
     await queryClient.cancelQueries({ queryKey: ["dose-detail", doseId] });
 
     // 2. Snapshot previous state
@@ -109,8 +110,10 @@ export const useDoseMutations = () => {
   };
 
   const onSettledRefetch = (doseId?: string) => {
-    queryClient.invalidateQueries({ queryKey: ["doses"] });
+    queryClient.resetQueries({ queryKey: ["doses"], exact: false });
     queryClient.invalidateQueries({ queryKey: ["scheduler-pending-doses"] });
+    queryClient.invalidateQueries({ queryKey: ["summary"] });
+
     if (doseId) {
       queryClient.invalidateQueries({ queryKey: ["dose-detail", doseId] });
     }
