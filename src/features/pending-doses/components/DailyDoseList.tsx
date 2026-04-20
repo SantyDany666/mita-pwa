@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useDoses } from "../hooks/useDoses";
+import { useCurrentTime } from "@/hooks/useCurrentTime";
 import {
   format,
   parseISO,
@@ -72,6 +73,7 @@ export function DailyDoseList({
   const navigate = useNavigate();
   const { doses, isLoading, takeDose, skipDose, undoDose } =
     useDoses(selectedDate);
+  const now = useCurrentTime();
 
   if (isLoading) {
     return (
@@ -119,8 +121,6 @@ export function DailyDoseList({
       return "--:--";
     }
   };
-
-  const now = new Date();
 
   doses.forEach((dose) => {
     if (dose.status === "taken") {

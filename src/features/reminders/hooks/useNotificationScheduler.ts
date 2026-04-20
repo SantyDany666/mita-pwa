@@ -115,7 +115,9 @@ export const useNotificationScheduler = () => {
   }, [pendingDoses, currentProfile]);
 
   // 4. Global Action Listeners
-  const { takeDose, skipDose, snoozeDose, undoDose } = useDoseMutations();
+  const { takeDose, skipDose, snoozeDose, undoDose } = useDoseMutations({
+    isNotificationContext: true,
+  });
   const { setSnoozeDoseId } = useUIStore();
 
   useEffect(() => {

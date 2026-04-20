@@ -8,12 +8,10 @@ export type DoseWithReminder = Tables<"dose_events"> & {
   reminders: Tables<"reminders"> | null;
 };
 
-export const useDoseMutations = () => {
+export const useDoseMutations = (options?: {
+  isNotificationContext?: boolean;
+}) => {
   const queryClient = useQueryClient();
-
-  // Note: We no longer need this specific queryKey for optimistic updates
-  // because we will update ALL cached dose lists matching ["doses"]
-  // with queryClient.setQueriesData.
 
   const performOptimisticUpdate = async (
     doseId: string,
@@ -110,7 +108,11 @@ export const useDoseMutations = () => {
   };
 
   const onSettledRefetch = (doseId?: string) => {
-    queryClient.resetQueries({ queryKey: ["doses"], exact: false });
+    if (options?.isNotificationContext) {
+      queryClient.resetQueries({ queryKey: ["doses"], exact: false });
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["doses"] });
+    }
     queryClient.invalidateQueries({ queryKey: ["scheduler-pending-doses"] });
     queryClient.invalidateQueries({ queryKey: ["summary"] });
 
