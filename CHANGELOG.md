@@ -1,0 +1,47 @@
+# 1.0.0 (2026-04-23)
+
+
+### Bug Fixes
+
+* **ci:** add required build number flag for capacitor sync ([7fb05cf](https://github.com/SantyDany666/mita-pwa/commit/7fb05cfca26b1d78a9609937be9ee5cf9d2aca97))
+* **ci:** restrict capacitor version sync to android only ([0b7f2eb](https://github.com/SantyDany666/mita-pwa/commit/0b7f2ebf2371dabba117a0d68245b7f506a73290))
+* **ci:** upgrade node to v24 for semantic-release ([0dd72db](https://github.com/SantyDany666/mita-pwa/commit/0dd72dbbdc5660d467237a3443f7abd71091b8bd))
+* **core:** integrate Capacitor app state with TanStack Query focusManager ([af48084](https://github.com/SantyDany666/mita-pwa/commit/af48084c5895016d395027fac80ed108b553bf4d))
+* **create-profile:** fix darkmode in header ([293a56c](https://github.com/SantyDany666/mita-pwa/commit/293a56c37dc5a704a3dbe2594239a59bc54c12b8))
+* **doses:** clean types in dose card ([43e22c6](https://github.com/SantyDany666/mita-pwa/commit/43e22c6ec2a26cc0f5c321e2edac78d0195403d9))
+* **redirect:** fix redirect pages in deployment ([442105b](https://github.com/SantyDany666/mita-pwa/commit/442105b6e516204d5f350c4da9f6410551f453ad))
+* **reminders:** cancel local notification on dose actions ([2340a46](https://github.com/SantyDany666/mita-pwa/commit/2340a46650c60cf52c1c60cdf1657edc560f9229))
+* **reminders:** ensure notifications sync after mutations and refactor ([e6d092e](https://github.com/SantyDany666/mita-pwa/commit/e6d092e64ee8400deaf9112aaabb9bd1a39296c4))
+* **reminders:** ensure UI refresh from notification actions and persistent overdue doses ([5f204f3](https://github.com/SantyDany666/mita-pwa/commit/5f204f34db934ed08816a92688797a448b4d2293))
+* **reminders:** resolve type mismatches and validate build ([05f21b0](https://github.com/SantyDany666/mita-pwa/commit/05f21b09fb46800e3ca0273d97e41fce92bc91bf))
+* **ui/ux:** improvements in recent modules ([618bcc7](https://github.com/SantyDany666/mita-pwa/commit/618bcc7cd022f07e0cc85b0f0e9d04aff21014fc))
+
+
+### Features
+
+* add mood logging (ui, zod validation, and database persistence) ([cbabecc](https://github.com/SantyDany666/mita-pwa/commit/cbabecc4616520a495bab230fd0b9348532a521a))
+* **android:** update app brand identity ([90771cb](https://github.com/SantyDany666/mita-pwa/commit/90771cb22470259c8a9022f867325e4f22a95afb))
+* **auth:** implement native Google Sign-In for Android ([7b2af56](https://github.com/SantyDany666/mita-pwa/commit/7b2af56e1ae3f6820504b42905ebaa17fce38728))
+* **auth:** set up ui for auth modules ([93ddb74](https://github.com/SantyDany666/mita-pwa/commit/93ddb748cf3f5d0efbc8dbb8ca784ef7b054b498))
+* **ci:** implement automated semantic versioning and release workflow ([a534b31](https://github.com/SantyDany666/mita-pwa/commit/a534b31131adb57cdd0a72e100c37edebdee6a79))
+* **doses:** implement reactive time tracking and optimize notification sync ([7511003](https://github.com/SantyDany666/mita-pwa/commit/7511003a365d05c8311107eef82cc20e9de4f923))
+* implement dose detail view and time-limited undo policy ([488b675](https://github.com/SantyDany666/mita-pwa/commit/488b675f23d47278bc834a51f54240626ac09376))
+* implement undo for doses & refine toast UX ([5aa24c9](https://github.com/SantyDany666/mita-pwa/commit/5aa24c98d10e19be18cdc5e89db6e88c46d8a4b4))
+* initialize core architecture, system rules and tech stack ([64797b4](https://github.com/SantyDany666/mita-pwa/commit/64797b4be634b249bd988358f024f489254b5413))
+* **notifications:** implement native/web notifications in reminders ([7771b3d](https://github.com/SantyDany666/mita-pwa/commit/7771b3d814b1bb5d3bb0397acb291709f7c64009))
+* **phone-login:** add phone login and otp behavior in backend, and improve styles ([e20e71d](https://github.com/SantyDany666/mita-pwa/commit/e20e71ddc99679f83a05d3edb34e47d345cfc590))
+* **profile:** add complete profile feature ([9cc2795](https://github.com/SantyDany666/mita-pwa/commit/9cc2795a78dffbf8474ecbf2edcc6863e98ce765))
+* **profile:** add view profile ui/ux ([eadb7a8](https://github.com/SantyDany666/mita-pwa/commit/eadb7a844f9e351eff9d2808b05f838c1c417d1e))
+* **profile:** implement profile edition with drawer and improve toaster ([6b72cea](https://github.com/SantyDany666/mita-pwa/commit/6b72ceadbc19983f3a891dea8322769b2b9bb4af))
+* **reminders/doses:** implement reminders and doses module with backend interaction ([820446c](https://github.com/SantyDany666/mita-pwa/commit/820446c88668bf5ea7acdb76a22eb8672f65aedc))
+* **reminders:** add inventory component ui/ux to form ([86cf062](https://github.com/SantyDany666/mita-pwa/commit/86cf062177bf1cea6d0865f6fbdcd1e8ba551ecc))
+* **reminders:** add reminders feature with only ux/ui ([f01f262](https://github.com/SantyDany666/mita-pwa/commit/f01f262c09ac1f2f810fe118157ec9874cffef7a))
+* **reminders:** enhance duration options and inventory alerts ([cd87b4a](https://github.com/SantyDany666/mita-pwa/commit/cd87b4a9ef63ffe0edf78727f173ad6a920d36d9))
+* **reminders:** filter units dynamically based on medicine presentation ([1e5688e](https://github.com/SantyDany666/mita-pwa/commit/1e5688e9b349ad1aaaa46353789c4325d7c3c9d9))
+* **reminders:** implement greedy notification scheduling and optimize UI reactivity ([130645f](https://github.com/SantyDany666/mita-pwa/commit/130645fdd8b7b4796b6a52fe29abb453b6ba3928))
+* **reminders:** implement low inventory alerts and global query-capacitor synchronization ([e5cb7ea](https://github.com/SantyDany666/mita-pwa/commit/e5cb7ea10c36f16c1d8a60b1677dd20e3cab7fa2))
+* **reminders:** ux/ui persist past doses and sync frequency and duration with start date ([d4c7caa](https://github.com/SantyDany666/mita-pwa/commit/d4c7caa05b9701b32ef4c1e057879928aa4e8f99))
+* **summary:** add native share dialog for PDF export on mobile via Capacitor ([f93685d](https://github.com/SantyDany666/mita-pwa/commit/f93685d262d2fa95b326be8df3fa4d8c2c993250))
+* **summary:** add summary module with dose/symptom/mood history tracking ([388761d](https://github.com/SantyDany666/mita-pwa/commit/388761d0ef7434d444612719c3b03ada41df1a21))
+* **summary:** implement medical report PDF export and detail view navigation ([31ec265](https://github.com/SantyDany666/mita-pwa/commit/31ec26565409b463f871975a0a86f665518586d9))
+* **symptoms:** add symptom logging ([414e5db](https://github.com/SantyDany666/mita-pwa/commit/414e5db5b9f22543efb55609c64436be6bf2fabd))
