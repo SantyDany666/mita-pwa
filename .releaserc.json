@@ -13,7 +13,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "npx capacitor-set-version -v ${nextRelease.version} -b ${process.env.GITHUB_RUN_NUMBER}"
+        "prepareCmd": "npx capacitor-set-version set:android -v ${nextRelease.version} -b ${process.env.GITHUB_RUN_NUMBER}"
       }
     ],
     [
