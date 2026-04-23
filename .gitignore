@@ -71,9 +71,8 @@ web_modules/
 
 # dotenv environment variables file
 .env
-.env.development.local
-.env.test.local
-.env.production.local
+.env.production
+.env.development
 .env.local
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -147,3 +146,6 @@ Thumbs.db
 
 # TanStack Router
 .tanstack/
+
+# Supabase
+supabase/.temp
